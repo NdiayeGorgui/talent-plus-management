@@ -9,7 +9,6 @@
         <processorPath useClasspath="false">
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.38/lombok-1.18.38.jar" />
         </processorPath>
-        <module name="offre-emploi-service" />
         <module name="recrutement-service" />
         <module name="utilisateur-service" />
         <module name="statistic-service" />
@@ -22,6 +21,7 @@
         <module name="eureka-service" />
         <module name="candidat-service" />
         <module name="config-service" />
+        <module name="offre-emploi-service" />
         <module name="api-gateway-service" />
         <module name="base-domaine-service" />
       </profile>
@@ -35,7 +35,7 @@
       <module name="config-service" options="" />
       <module name="eureka-service" options="" />
       <module name="notification-service" options="-parameters" />
-      <module name="offre-emploi-service" options="-parameters" />
+      <module name="offre-emploi-service" options="" />
       <module name="recrutement-service" options="-parameters" />
       <module name="statistic-service" options="-parameters" />
       <module name="utilisateur-service" options="-parameters" />
