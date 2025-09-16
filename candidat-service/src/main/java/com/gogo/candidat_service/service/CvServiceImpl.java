@@ -1,0 +1,115 @@
+package com.gogo.candidat_service.service;
+
+import com.gogo.candidat_service.dto.CvDTO;
+import com.gogo.candidat_service.mapper.CvMapper;
+import com.gogo.candidat_service.model.CV;
+import com.gogo.candidat_service.model.Candidat;
+import com.gogo.candidat_service.repository.CandidatRepository;
+import com.gogo.candidat_service.repository.CVRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Service
+public class CvServiceImpl implements CvService {
+
+    private final CVRepository cvRepository;
+    private final CandidatRepository candidatRepository;
+
+    // Dossier où les CVs seront stockés (relatif au projet)
+    private final String uploadDir = System.getProperty("user.home") + File.separator + "uploads" + File.separator + "cv" + File.separator;
+
+    public CvServiceImpl(CVRepository cvRepository, CandidatRepository candidatRepository) {
+        this.cvRepository = cvRepository;
+        this.candidatRepository = candidatRepository;
+    }
+
+    @Override
+    public CvDTO uploadCv(Long candidatId, MultipartFile file, String titre) throws IOException {
+        Candidat candidat = candidatRepository.findById(candidatId)
+                .orElseThrow(() -> new RuntimeException("Candidat non trouvé"));
+
+        File dir = new File(uploadDir);
+        if (!dir.exists()) dir.mkdirs();
+
+        String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+        String filePath = uploadDir + fileName;
+        file.transferTo(new File(filePath));
+
+        CV cv = new CV();
+        cv.setTitre(titre);
+        cv.setFichierUrl(filePath);
+        cv.setCandidat(candidat);
+        cv.setDateDepot(LocalDateTime.now());
+
+        Integer lastVersion = cvRepository.findTopByCandidatOrderByVersionDesc(candidat)
+                .map(CV::getVersion)
+                .orElse(0);
+        cv.setVersion(lastVersion + 1);
+
+        CV saved = cvRepository.save(cv);
+        return CvMapper.toDTO(saved);
+    }
+
+    @Override
+    public CvDTO replaceCv(Long cvId, MultipartFile file, String titre) throws IOException {
+        CV oldCv = cvRepository.findById(cvId)
+                .orElseThrow(() -> new RuntimeException("CV non trouvé avec id " + cvId));
+
+        File oldFile = new File(oldCv.getFichierUrl());
+        if (oldFile.exists()) oldFile.delete();
+
+        cvRepository.delete(oldCv);
+
+        File dir = new File(uploadDir);
+        if (!dir.exists()) dir.mkdirs();
+
+        String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+        String filePath = uploadDir + fileName;
+        file.transferTo(new File(filePath));
+
+        CV newCv = new CV();
+        newCv.setTitre(titre != null ? titre : oldCv.getTitre());
+        newCv.setFichierUrl(filePath);
+        newCv.setCandidat(oldCv.getCandidat());
+        newCv.setDateDepot(LocalDateTime.now());
+
+        Integer lastVersion = cvRepository.findTopByCandidatOrderByVersionDesc(oldCv.getCandidat())
+                .map(CV::getVersion)
+                .orElse(0);
+        newCv.setVersion(lastVersion + 1);
+
+        CV saved = cvRepository.save(newCv);
+        return CvMapper.toDTO(saved);
+    }
+
+
+    @Override
+    public List<CvDTO> getCvsByCandidat(Long candidatId) {
+        return cvRepository.findByCandidatId(candidatId)
+                .stream()
+                .map(CvMapper::toDTO)
+                .toList();
+    }
+
+
+    @Override
+    public void deleteCv(Long cvId) {
+        CV cv = cvRepository.findById(cvId)
+                .orElseThrow(() -> new RuntimeException("CV non trouvé avec id " + cvId));
+
+        // Supprimer le fichier physique
+        File file = new File(cv.getFichierUrl());
+        if (file.exists()) {
+            file.delete();
+        }
+
+        // Supprimer l'enregistrement en base
+        cvRepository.delete(cv);
+    }
+
+}
