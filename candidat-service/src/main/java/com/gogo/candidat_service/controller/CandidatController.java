@@ -1,6 +1,7 @@
 package com.gogo.candidat_service.controller;
 
 import com.gogo.candidat_service.dto.CandidatDTO;
+import com.gogo.candidat_service.dto.CandidatureParMoisDTO;
 import com.gogo.candidat_service.model.*;
 import com.gogo.candidat_service.service.*;
 import org.springframework.web.bind.annotation.*;
@@ -50,6 +51,12 @@ public class CandidatController {
     public List<CandidatDTO> searchCandidats(@RequestParam String keyword) {
         return candidatService.searchCandidats(keyword);
     }
+
+    /*@GetMapping("/par-mois")
+    public List<CandidatureParMoisDTO> getCandidaturesParMois() {
+        return candidatService.getCandidaturesParMois();
+    }*/
+
 
 }
 

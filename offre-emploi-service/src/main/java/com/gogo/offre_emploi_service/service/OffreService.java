@@ -15,5 +15,7 @@ public interface OffreService {
     List<OffreDTO> getAllOffres();
 
     OffreDTO getOffreById(Long id);
+    List<OffreDTO> getOffresByRecruteur(Long recruteurId);
+
 }
 

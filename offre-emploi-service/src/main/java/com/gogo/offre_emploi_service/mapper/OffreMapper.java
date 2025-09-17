@@ -15,6 +15,7 @@ public class OffreMapper {
         dto.setDescription(offre.getDescription());
         dto.setDatePublication(offre.getDatePublication());
         dto.setActive(offre.isActive());
+        dto.setRecruteurId(offre.getRecruteurId());
         return dto;
     }
 
@@ -25,6 +26,7 @@ public class OffreMapper {
         offre.setDescription(dto.getDescription());
         offre.setDatePublication(dto.getDatePublication() != null ? dto.getDatePublication() : LocalDateTime.now());
         offre.setActive(dto.isActive());
+        offre.setRecruteurId(dto.getRecruteurId());
         return offre;
     }
 }

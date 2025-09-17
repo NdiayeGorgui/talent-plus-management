@@ -12,7 +12,7 @@ public class OffreDTO {
     private String description;
     private LocalDateTime datePublication;
     private boolean active;
+    private Long recruteurId;
 
-    // getters et setters
 }
 

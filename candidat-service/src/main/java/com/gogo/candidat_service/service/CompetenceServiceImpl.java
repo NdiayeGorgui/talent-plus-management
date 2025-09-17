@@ -45,4 +45,10 @@ public class CompetenceServiceImpl implements CompetenceService {
     public void deleteCompetence(Long id) {
         competenceRepository.deleteById(id);
     }
+    @Override
+    public List<String> findMostFrequentCompetences() {
+
+        return competenceRepository.findMostFrequentCompetences();
+    }
+
 }

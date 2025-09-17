@@ -40,4 +40,11 @@ public class CompetenceController {
         competenceService.deleteCompetence(id);
         return ResponseEntity.noContent().build();
     }
+
+
+    @GetMapping("/competences-frequentes")
+    public ResponseEntity<List<String>> getCompetencesFrequentes() {
+        return ResponseEntity.ok(competenceService.findMostFrequentCompetences());
+    }
+
 }

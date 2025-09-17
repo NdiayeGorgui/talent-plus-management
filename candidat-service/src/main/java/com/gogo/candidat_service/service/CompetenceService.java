@@ -10,4 +10,5 @@ public interface CompetenceService {
     CompetenceDTO addCompetence(Long candidatId, CompetenceDTO dto);
     List<CompetenceDTO> getCompetencesByCandidat(Long candidatId);
     void deleteCompetence(Long id);
+    List<String> findMostFrequentCompetences();
 }

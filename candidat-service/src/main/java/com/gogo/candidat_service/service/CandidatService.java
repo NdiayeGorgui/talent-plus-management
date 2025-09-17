@@ -1,6 +1,7 @@
 package com.gogo.candidat_service.service;
 
 import com.gogo.candidat_service.dto.CandidatDTO;
+import com.gogo.candidat_service.dto.CandidatureParMoisDTO;
 import com.gogo.candidat_service.dto.PostulerRequest;
 import com.gogo.candidat_service.model.Candidat;
 
@@ -15,5 +16,6 @@ public interface CandidatService {
     List<CandidatDTO> getAllCandidats();
     List<CandidatDTO> searchCandidats(String keyword);
     Candidat postuler(PostulerRequest request);
+   // List<CandidatureParMoisDTO> getCandidaturesParMois();
 }
 

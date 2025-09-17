@@ -2,18 +2,6 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <annotationProcessing>
-      <profile name="Annotation profile for utilisateur-service" enabled="true">
-        <sourceOutputDir name="target/generated-sources/annotations" />
-        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
-        <outputRelativeToContentRoot value="true" />
-        <processorPath useClasspath="false">
-          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.38/lombok-1.18.38.jar" />
-        </processorPath>
-        <module name="recrutement-service" />
-        <module name="utilisateur-service" />
-        <module name="statistic-service" />
-        <module name="notification-service" />
-      </profile>
       <profile name="Maven default annotation processors profile" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
@@ -22,8 +10,21 @@
         <module name="candidat-service" />
         <module name="config-service" />
         <module name="offre-emploi-service" />
+        <module name="recruteur-service" />
         <module name="api-gateway-service" />
+        <module name="recrutement-service" />
+        <module name="statistic-service" />
         <module name="base-domaine-service" />
+      </profile>
+      <profile name="Annotation profile for statistic-service" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.36/lombok-1.18.36.jar" />
+        </processorPath>
+        <module name="notification-service" />
+        <module name="utilisateur-service" />
       </profile>
     </annotationProcessing>
   </component>
@@ -36,8 +37,9 @@
       <module name="eureka-service" options="" />
       <module name="notification-service" options="-parameters" />
       <module name="offre-emploi-service" options="" />
-      <module name="recrutement-service" options="-parameters" />
-      <module name="statistic-service" options="-parameters" />
+      <module name="recrutement-service" options="" />
+      <module name="recruteur-service" options="" />
+      <module name="statistic-service" options="" />
       <module name="utilisateur-service" options="-parameters" />
     </option>
   </component>

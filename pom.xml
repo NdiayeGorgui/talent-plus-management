@@ -16,6 +16,7 @@
         <module>eureka-service</module>
         <module>offre-emploi-service</module>
         <module>recrutement-service</module>
+        <module>recruteur-service</module>
         <module>notification-service</module>
         <module>statistic-service</module>
         <module>utilisateur-service</module>

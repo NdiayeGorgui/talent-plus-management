@@ -20,6 +20,8 @@ public class Offre {
     private LocalDateTime datePublication = LocalDateTime.now();
 
     private boolean active = true; // pour clôturer l'offre
+    // association via id seulement (microservice Recruteur séparé)
+    private Long recruteurId;
 
     // getters et setters
     public Long getId() { return id; }
@@ -32,5 +34,7 @@ public class Offre {
     public void setDatePublication(LocalDateTime datePublication) { this.datePublication = datePublication; }
     public boolean isActive() { return active; }
     public void setActive(boolean active) { this.active = active; }
+    public Long getRecruteurId() { return recruteurId; }
+    public void setRecruteurId(Long recruteurId) { this.recruteurId = recruteurId; }
 }
 

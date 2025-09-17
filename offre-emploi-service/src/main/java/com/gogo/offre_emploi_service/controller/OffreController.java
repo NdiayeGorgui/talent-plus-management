@@ -42,5 +42,10 @@ public class OffreController {
     public ResponseEntity<OffreDTO> getOffreById(@PathVariable Long id) {
         return ResponseEntity.ok(offreService.getOffreById(id));
     }
+
+    @GetMapping("/recruteur/{recruteurId}")
+    public ResponseEntity<List<OffreDTO>> getOffresByRecruteur(@PathVariable("recruteurId") Long recruteurId) {
+        return ResponseEntity.ok(offreService.getOffresByRecruteur(recruteurId));
+    }
 }
 
