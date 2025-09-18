@@ -14,6 +14,7 @@
         <module name="api-gateway-service" />
         <module name="recrutement-service" />
         <module name="statistic-service" />
+        <module name="notification-service" />
         <module name="base-domaine-service" />
       </profile>
       <profile name="Annotation profile for statistic-service" enabled="true">
@@ -23,7 +24,6 @@
         <processorPath useClasspath="false">
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.36/lombok-1.18.36.jar" />
         </processorPath>
-        <module name="notification-service" />
         <module name="utilisateur-service" />
       </profile>
     </annotationProcessing>
@@ -35,7 +35,7 @@
       <module name="candidat-service" options="" />
       <module name="config-service" options="" />
       <module name="eureka-service" options="" />
-      <module name="notification-service" options="-parameters" />
+      <module name="notification-service" options="" />
       <module name="offre-emploi-service" options="" />
       <module name="recrutement-service" options="" />
       <module name="recruteur-service" options="" />

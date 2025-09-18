@@ -4,6 +4,7 @@ import com.gogo.candidat_service.dto.CandidatDTO;
 import com.gogo.candidat_service.dto.CandidatureParMoisDTO;
 import com.gogo.candidat_service.model.*;
 import com.gogo.candidat_service.service.*;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -52,10 +53,16 @@ public class CandidatController {
         return candidatService.searchCandidats(keyword);
     }
 
-    /*@GetMapping("/par-mois")
-    public List<CandidatureParMoisDTO> getCandidaturesParMois() {
-        return candidatService.getCandidaturesParMois();
-    }*/
+    @GetMapping("/{id}/email")
+    public ResponseEntity<String> getEmail(@PathVariable("id") Long id) {
+        try {
+            CandidatDTO candidat = candidatService.findById(id);
+            return ResponseEntity.ok(candidat.getEmail());
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 
 
 }

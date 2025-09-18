@@ -23,12 +23,12 @@ public class OffreController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<OffreDTO> updateOffre(@PathVariable Long id, @RequestBody OffreDTO dto) {
+    public ResponseEntity<OffreDTO> updateOffre(@PathVariable("id") Long id, @RequestBody OffreDTO dto) {
         return ResponseEntity.ok(offreService.updateOffre(id, dto));
     }
 
     @PutMapping("/{id}/close")
-    public ResponseEntity<Void> closeOffre(@PathVariable Long id) {
+    public ResponseEntity<Void> closeOffre(@PathVariable("id") Long id) {
         offreService.closeOffre(id);
         return ResponseEntity.ok().build();
     }
@@ -39,11 +39,11 @@ public class OffreController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<OffreDTO> getOffreById(@PathVariable Long id) {
+    public ResponseEntity<OffreDTO> getOffreById(@PathVariable("id") Long id) {
         return ResponseEntity.ok(offreService.getOffreById(id));
     }
 
-    @GetMapping("/recruteur/{recruteurId}")
+    @GetMapping("/recruteurs/{recruteurId}")
     public ResponseEntity<List<OffreDTO>> getOffresByRecruteur(@PathVariable("recruteurId") Long recruteurId) {
         return ResponseEntity.ok(offreService.getOffresByRecruteur(recruteurId));
     }

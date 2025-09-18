@@ -1,4 +1,4 @@
-package com.gogo.statistic_service.dto;
+package com.gogo.candidat_service.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,13 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class StatutCountDTO {
-    private String statut;
-    private Long count;
-
-    
+public class CompetenceFrequencyDTO {
+    private String competence;
+    private Long frequency;
 }
-
-
-
 

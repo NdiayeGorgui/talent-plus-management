@@ -1,6 +1,7 @@
 package com.gogo.candidat_service.service;
 
 import com.gogo.candidat_service.dto.CompetenceDTO;
+import com.gogo.candidat_service.dto.CompetenceFrequencyDTO;
 import com.gogo.candidat_service.mapper.CompetenceMapper;
 import com.gogo.candidat_service.model.Candidat;
 import com.gogo.candidat_service.model.Competence;
@@ -45,10 +46,15 @@ public class CompetenceServiceImpl implements CompetenceService {
     public void deleteCompetence(Long id) {
         competenceRepository.deleteById(id);
     }
-    @Override
-    public List<String> findMostFrequentCompetences() {
-
-        return competenceRepository.findMostFrequentCompetences();
+    public List<CompetenceFrequencyDTO> findMostFrequentCompetences() {
+        return competenceRepository.findAll().stream()
+                .collect(Collectors.groupingBy(Competence::getLibelle, Collectors.counting()))
+                .entrySet().stream()
+                .map(e -> new CompetenceFrequencyDTO(e.getKey(), e.getValue()))
+                .sorted((a, b) -> Long.compare(b.getFrequency(), a.getFrequency())) // tri décroissant
+                .collect(Collectors.toList());
     }
+
+
 
 }

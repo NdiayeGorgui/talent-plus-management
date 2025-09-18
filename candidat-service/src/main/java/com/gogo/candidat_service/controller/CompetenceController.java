@@ -1,6 +1,7 @@
 package com.gogo.candidat_service.controller;
 
 import com.gogo.candidat_service.dto.CompetenceDTO;
+import com.gogo.candidat_service.dto.CompetenceFrequencyDTO;
 import com.gogo.candidat_service.mapper.CompetenceMapper;
 import com.gogo.candidat_service.model.Competence;
 import com.gogo.candidat_service.service.CompetenceService;
@@ -41,10 +42,11 @@ public class CompetenceController {
         return ResponseEntity.noContent().build();
     }
 
-
     @GetMapping("/competences-frequentes")
-    public ResponseEntity<List<String>> getCompetencesFrequentes() {
+    public ResponseEntity<List<CompetenceFrequencyDTO>> getCompetencesFrequentes() {
         return ResponseEntity.ok(competenceService.findMostFrequentCompetences());
     }
+
+
 
 }

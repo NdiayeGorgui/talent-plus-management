@@ -21,7 +21,7 @@ public class OffreMapper {
 
     public static Offre fromDTO(OffreDTO dto) {
         Offre offre = new Offre();
-        offre.setId(dto.getId());
+       // offre.setId(dto.getId());
         offre.setTitre(dto.getTitre());
         offre.setDescription(dto.getDescription());
         offre.setDatePublication(dto.getDatePublication() != null ? dto.getDatePublication() : LocalDateTime.now());

@@ -1,4 +1,4 @@
-package com.gogo.statistic_service.dto;
+package com.gogo.recrutement_service.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

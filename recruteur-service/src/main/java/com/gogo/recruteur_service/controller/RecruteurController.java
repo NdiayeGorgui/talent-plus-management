@@ -27,17 +27,17 @@ public class RecruteurController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<RecruteurDTO> getRecruteurById(@PathVariable Long id) {
+    public ResponseEntity<RecruteurDTO> getRecruteurById(@PathVariable("id") Long id) {
         return ResponseEntity.ok(recruteurService.getRecruteurById(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<RecruteurDTO> updateRecruteur(@PathVariable Long id, @RequestBody RecruteurDTO dto) {
+    public ResponseEntity<RecruteurDTO> updateRecruteur(@PathVariable("id") Long id, @RequestBody RecruteurDTO dto) {
         return ResponseEntity.ok(recruteurService.updateRecruteur(id, dto));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteRecruteur(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteRecruteur(@PathVariable("id") Long id) {
         recruteurService.deleteRecruteur(id);
         return ResponseEntity.noContent().build();
     }

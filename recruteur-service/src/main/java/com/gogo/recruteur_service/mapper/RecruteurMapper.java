@@ -7,7 +7,7 @@ public class RecruteurMapper {
 
     public static Recruteur fromDTO(RecruteurDTO dto) {
         Recruteur recruteur = new Recruteur();
-        recruteur.setId(dto.getId()); // optionnel si auto-généré
+       // recruteur.setId(dto.getId()); // optionnel si auto-généré
         recruteur.setNom(dto.getNom());
         recruteur.setEmail(dto.getEmail());
         return recruteur;

@@ -1,4 +1,4 @@
-package com.gogo.offre_emploi_service.config;
+package com.gogo.recrutement_service.config;
 
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
@@ -8,16 +8,27 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Configuration
 public class WebClientConfig {
 
-
     @Bean
     @LoadBalanced   // ⚡ très important pour Eureka
     public WebClient.Builder webClientBuilder() {
         return WebClient.builder();
     }
-    @Bean
-    public WebClient recruteurWebClient(WebClient.Builder builder) {
+
+    // Pour récupérer le candidat
+    @Bean(name = "candidatWebClient")
+    public WebClient candidatWebClient(WebClient.Builder builder) {
         return builder
-                .baseUrl("http://recruteur-service/api/v1/recruteurs")
+                .baseUrl("http://candidat-service/api/v1/candidats")
                 .build();
     }
+
+    // Pour récupérer l'offre
+    @Bean(name = "offreWebClient")
+    public WebClient offreWebClient(WebClient.Builder builder) {
+        return builder
+                .baseUrl("http://offre-service/api/v1/offres")
+                .build();
+    }
+
 }
+

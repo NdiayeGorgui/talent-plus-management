@@ -1,18 +1,14 @@
 package com.gogo.candidat_service.service;
 
 import com.gogo.candidat_service.dto.CandidatDTO;
-import com.gogo.candidat_service.dto.CandidatureParMoisDTO;
 import com.gogo.candidat_service.dto.PostulerRequest;
 import com.gogo.candidat_service.mapper.*;
 import com.gogo.candidat_service.model.*;
 import com.gogo.candidat_service.repository.CandidatRepository;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+;
 
 @Service
 public class CandidatServiceImpl implements CandidatService {
@@ -121,35 +117,12 @@ public class CandidatServiceImpl implements CandidatService {
         return candidatRepository.save(candidat);
     }
 
-    /*@Override
-    public List<CandidatureParMoisDTO> getCandidaturesParMois() {
-        List<Candidat> candidats = candidatRepository.findAll();
-
-        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM");
-
-        // Collecter toutes les dates de dépôt (CV + lettres)
-        List<LocalDate> allDates = candidats.stream()
-                .flatMap(c -> {
-                    List<LocalDate> dates = new ArrayList<>();
-                    dates.addAll(c.getCvs().stream()
-                            .map(cv -> cv.getDateDepot().toLocalDate()) // <- conversion
-                            .toList());
-                    dates.addAll(c.getLettres().stream()
-                            .map(l -> l.getDateDepot().toLocalDate()) // <- conversion
-                            .toList());
-                    return dates.stream();
-                })
-                .toList();
-
-        // Grouper par mois
-        return allDates.stream()
-                .collect(Collectors.groupingBy(d -> d.format(fmt), Collectors.counting()))
-                .entrySet().stream()
-                .map(e -> new CandidatureParMoisDTO(e.getKey(), e.getValue()))
-                .sorted((a, b) -> a.getMois().compareTo(b.getMois()))
-                .toList();
+    @Override
+    public CandidatDTO findById(Long id) {
+        return candidatRepository.findById(id)
+                .map(CandidatMapper::toDTO)
+                .orElseThrow(() -> new RuntimeException("Candidat introuvable avec id=" + id));
     }
-*/
 
 
 }
