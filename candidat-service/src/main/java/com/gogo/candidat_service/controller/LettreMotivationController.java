@@ -1,7 +1,8 @@
 package com.gogo.candidat_service.controller;
 
 import com.gogo.candidat_service.dto.LettreDTO;
-import com.gogo.candidat_service.model.LettreMotivation;
+import com.gogo.candidat_service.exception.CandidatNotFoundException;
+import com.gogo.candidat_service.exception.LettreMotivationNotFoundException;
 import com.gogo.candidat_service.service.LettreMotivationService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +26,7 @@ public class LettreMotivationController {
     @PostMapping("/{candidatId}")
     public ResponseEntity<LettreDTO> createLettre(
             @PathVariable("candidatId") Long candidatId,
-            @RequestBody LettreDTO lettreDTO) {
+            @RequestBody LettreDTO lettreDTO) throws CandidatNotFoundException {
         return ResponseEntity.ok(lettreService.addLettre(candidatId, lettreDTO));
     }
 
@@ -34,7 +35,7 @@ public class LettreMotivationController {
     public ResponseEntity<LettreDTO> uploadLettre(
             @PathVariable("candidatId") Long candidatId,
             @RequestParam("file") MultipartFile file,
-            @RequestParam("titre") String titre) throws IOException {
+            @RequestParam("titre") String titre) throws IOException, CandidatNotFoundException {
         return ResponseEntity.ok(lettreService.uploadLettre(candidatId, file, titre));
     }
 
@@ -43,20 +44,20 @@ public class LettreMotivationController {
     public ResponseEntity<LettreDTO> replaceLettre(
             @PathVariable("lettreId") Long lettreId,
             @RequestParam("file") MultipartFile file,
-            @RequestParam("titre") String titre) throws IOException {
+            @RequestParam("titre") String titre) throws IOException, LettreMotivationNotFoundException {
         return ResponseEntity.ok(lettreService.replaceLettre(lettreId, file, titre));
     }
 
     // Supprimer une lettre
     @DeleteMapping("/{lettreId}")
-    public ResponseEntity<Void> deleteLettre(@PathVariable("lettreId") Long lettreId) {
+    public ResponseEntity<Void> deleteLettre(@PathVariable("lettreId") Long lettreId) throws LettreMotivationNotFoundException {
         lettreService.deleteLettre(lettreId);
         return ResponseEntity.noContent().build();
     }
 
     // Récupérer toutes les lettres d’un candidat (DTO pour éviter cycle)
     @GetMapping("/{candidatId}/lettres")
-    public ResponseEntity<List<LettreDTO>> getLettresByCandidat(@PathVariable("candidatId") Long candidatId) {
+    public ResponseEntity<List<LettreDTO>> getLettresByCandidat(@PathVariable("candidatId") Long candidatId) throws CandidatNotFoundException {
         List<LettreDTO> lettres = lettreService.getLettresByCandidat(candidatId);
         return ResponseEntity.ok(lettres);
     }

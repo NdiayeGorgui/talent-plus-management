@@ -1,6 +1,7 @@
 package com.gogo.offre_emploi_service.service;
 
 import com.gogo.offre_emploi_service.dto.OffreDTO;
+import com.gogo.offre_emploi_service.exception.OffreNotFoundException;
 import com.gogo.offre_emploi_service.mapper.OffreMapper;
 import com.gogo.offre_emploi_service.model.Offre;
 import com.gogo.offre_emploi_service.repository.OffreRepository;
@@ -31,9 +32,9 @@ public class OffreServiceImpl implements OffreService {
     }
 
     @Override
-    public OffreDTO updateOffre(Long id, OffreDTO dto) {
+    public OffreDTO updateOffre(Long id, OffreDTO dto) throws OffreNotFoundException {
         Offre offre = offreRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Offre non trouvée avec id " + id));
+                .orElseThrow(() -> new OffreNotFoundException("Offre not available with id: " + id));
 
         // Vérifier si on souhaite changer le recruteur
         if (dto.getRecruteurId() != null && !dto.getRecruteurId().equals(offre.getRecruteurId())) {
@@ -41,18 +42,25 @@ public class OffreServiceImpl implements OffreService {
             offre.setRecruteurId(dto.getRecruteurId());
         }
 
+        // Mettre à jour les champs principaux
         offre.setTitre(dto.getTitre());
         offre.setDescription(dto.getDescription());
         offre.setActive(dto.isActive());
 
-        return OffreMapper.toDTO(offreRepository.save(offre));
+        if (dto.getDatePublication() != null) {
+            offre.setDatePublication(dto.getDatePublication());
+        }
+
+        Offre updated = offreRepository.save(offre);
+        return OffreMapper.toDTO(updated);
     }
 
 
+
     @Override
-    public void closeOffre(Long id) {
+    public void closeOffre(Long id) throws OffreNotFoundException {
         Offre offre = offreRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Offre non trouvée avec id " + id));
+                .orElseThrow(() -> new OffreNotFoundException("Offre not available with id: " + id));
         offre.setActive(false);
         offreRepository.save(offre);
     }
@@ -65,12 +73,19 @@ public class OffreServiceImpl implements OffreService {
     }
 
     @Override
-    public OffreDTO getOffreById(Long id) {
-        return offreRepository.findById(id)
-                .map(OffreMapper::toDTO)
-                .orElseThrow(() -> new RuntimeException("Offre non trouvée avec id " + id));
+    public OffreDTO getOffreById(Long id) throws OffreNotFoundException {
+        Offre offre = offreRepository.findById(id)
+                .orElseThrow(() -> new OffreNotFoundException("Offre not available with id: " + id));
+        return OffreMapper.toDTO(offre);
     }
 
+    @Override
+    public void deleteOffre(Long id) throws OffreNotFoundException {
+        if (!offreRepository.existsById(id)) {
+            throw new OffreNotFoundException("Offre not available with id: " + id);
+        }
+        offreRepository.deleteById(id);
+    }
     @Override
     public List<OffreDTO> getOffresByRecruteur(Long recruteurId) {
         validateRecruteurExists(recruteurId);

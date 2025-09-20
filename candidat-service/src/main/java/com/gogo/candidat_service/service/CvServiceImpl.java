@@ -1,11 +1,13 @@
 package com.gogo.candidat_service.service;
 
 import com.gogo.candidat_service.dto.CvDTO;
+import com.gogo.candidat_service.exception.CandidatNotFoundException;
+import com.gogo.candidat_service.exception.CvNotFoundException;
 import com.gogo.candidat_service.mapper.CvMapper;
 import com.gogo.candidat_service.model.CV;
 import com.gogo.candidat_service.model.Candidat;
-import com.gogo.candidat_service.repository.CandidatRepository;
 import com.gogo.candidat_service.repository.CVRepository;
+import com.gogo.candidat_service.repository.CandidatRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,7 +22,6 @@ public class CvServiceImpl implements CvService {
     private final CVRepository cvRepository;
     private final CandidatRepository candidatRepository;
 
-    // Dossier où les CVs seront stockés (relatif au projet)
     private final String uploadDir = System.getProperty("user.home") + File.separator + "uploads" + File.separator + "cv" + File.separator;
 
     public CvServiceImpl(CVRepository cvRepository, CandidatRepository candidatRepository) {
@@ -29,9 +30,9 @@ public class CvServiceImpl implements CvService {
     }
 
     @Override
-    public CvDTO uploadCv(Long candidatId, MultipartFile file, String titre) throws IOException {
+    public CvDTO uploadCv(Long candidatId, MultipartFile file, String titre) throws IOException, CandidatNotFoundException {
         Candidat candidat = candidatRepository.findById(candidatId)
-                .orElseThrow(() -> new RuntimeException("Candidat non trouvé"));
+                .orElseThrow(() -> new CandidatNotFoundException("Candidat non trouvé avec id " + candidatId));
 
         File dir = new File(uploadDir);
         if (!dir.exists()) dir.mkdirs();
@@ -56,14 +57,12 @@ public class CvServiceImpl implements CvService {
     }
 
     @Override
-    public CvDTO replaceCv(Long cvId, MultipartFile file, String titre) throws IOException {
+    public CvDTO replaceCv(Long cvId, MultipartFile file, String titre) throws IOException, CvNotFoundException {
         CV oldCv = cvRepository.findById(cvId)
-                .orElseThrow(() -> new RuntimeException("CV non trouvé avec id " + cvId));
+                .orElseThrow(() -> new CvNotFoundException("CV non trouvé avec id " + cvId));
 
         File oldFile = new File(oldCv.getFichierUrl());
         if (oldFile.exists()) oldFile.delete();
-
-        cvRepository.delete(oldCv);
 
         File dir = new File(uploadDir);
         if (!dir.exists()) dir.mkdirs();
@@ -87,29 +86,25 @@ public class CvServiceImpl implements CvService {
         return CvMapper.toDTO(saved);
     }
 
-
     @Override
-    public List<CvDTO> getCvsByCandidat(Long candidatId) {
+    public List<CvDTO> getCvsByCandidat(Long candidatId) throws CandidatNotFoundException {
+        if (!candidatRepository.existsById(candidatId)) {
+            throw new CandidatNotFoundException("Candidat non trouvé avec id " + candidatId);
+        }
         return cvRepository.findByCandidatId(candidatId)
                 .stream()
                 .map(CvMapper::toDTO)
                 .toList();
     }
 
-
     @Override
-    public void deleteCv(Long cvId) {
+    public void deleteCv(Long cvId) throws CvNotFoundException {
         CV cv = cvRepository.findById(cvId)
-                .orElseThrow(() -> new RuntimeException("CV non trouvé avec id " + cvId));
+                .orElseThrow(() -> new CvNotFoundException("CV non trouvé avec id " + cvId));
 
-        // Supprimer le fichier physique
         File file = new File(cv.getFichierUrl());
-        if (file.exists()) {
-            file.delete();
-        }
+        if (file.exists()) file.delete();
 
-        // Supprimer l'enregistrement en base
         cvRepository.delete(cv);
     }
-
 }

@@ -4,6 +4,10 @@ import com.gogo.recrutement_service.dto.PostulerDTO;
 import com.gogo.recrutement_service.dto.ProcessusDTO;
 import com.gogo.recrutement_service.dto.HistoriqueDTO;
 import com.gogo.recrutement_service.dto.StatutCountDTO;
+import com.gogo.recrutement_service.exception.CandidatNotFoundException;
+import com.gogo.recrutement_service.exception.NotificationException;
+import com.gogo.recrutement_service.exception.OffreNotFoundException;
+import com.gogo.recrutement_service.exception.ProcessusNotFoundException;
 import com.gogo.recrutement_service.service.RecrutementService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +30,7 @@ public class RecrutementController {
 
     // 1. Candidat postule à une offre
     @PostMapping("/postuler")
-    public ResponseEntity<ProcessusDTO> postuler(@RequestBody PostulerDTO dto) {
+    public ResponseEntity<ProcessusDTO> postuler(@RequestBody PostulerDTO dto) throws CandidatNotFoundException, OffreNotFoundException, NotificationException {
         return ResponseEntity.ok(recrutementService.createProcessus(dto.getCandidatId(), dto.getOffreId()));
     }
 
@@ -35,7 +39,7 @@ public class RecrutementController {
     @PutMapping("/{processusId}/statut")
     public ResponseEntity<ProcessusDTO> changerStatut(
             @PathVariable("processusId") Long processusId,
-            @RequestParam("nouveauStatut") String nouveauStatut) {
+            @RequestParam("nouveauStatut") String nouveauStatut) throws ProcessusNotFoundException, NotificationException {
         return ResponseEntity.ok(recrutementService.updateStatut(processusId, nouveauStatut));
     }
 

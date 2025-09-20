@@ -1,7 +1,8 @@
 package com.gogo.candidat_service.controller;
 
 import com.gogo.candidat_service.dto.ExperienceDTO;
-import com.gogo.candidat_service.model.Experience;
+import com.gogo.candidat_service.exception.CandidatNotFoundException;
+import com.gogo.candidat_service.exception.ExperienceNotFoundException;
 import com.gogo.candidat_service.service.ExperienceService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,15 +21,15 @@ public class ExperienceController {
 
     //save experience
     @PostMapping("/{candidatId}")
-    public ResponseEntity<ExperienceDTO> addExperience(
+    public ResponseEntity<List<ExperienceDTO>> addExperience(
             @PathVariable("candidatId") Long candidatId,
-            @RequestBody ExperienceDTO dto) {
-        return ResponseEntity.ok(experienceService.addExperience(candidatId, dto));
+            @RequestBody List<ExperienceDTO> dtos) throws CandidatNotFoundException {
+        return ResponseEntity.ok(experienceService.addExperiences(candidatId, dtos));
     }
 
     // Récupérer toutes les expériences d’un candidat
     @GetMapping("/{candidatId}/experiences")
-    public ResponseEntity<List<ExperienceDTO>> getExperiencesByCandidat(@PathVariable("candidatId") Long candidatId) {
+    public ResponseEntity<List<ExperienceDTO>> getExperiencesByCandidat(@PathVariable("candidatId") Long candidatId) throws CandidatNotFoundException {
         List<ExperienceDTO> experiences = experienceService.getExperiencesByCandidat(candidatId);
         return ResponseEntity.ok(experiences);
     }
@@ -36,7 +37,7 @@ public class ExperienceController {
 
     // Supprimer une expérience par son id
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteExperience(@PathVariable("id") Long id) {
+    public ResponseEntity<Void> deleteExperience(@PathVariable("id") Long id) throws ExperienceNotFoundException {
         experienceService.deleteExperience(id);
         return ResponseEntity.noContent().build();
     }

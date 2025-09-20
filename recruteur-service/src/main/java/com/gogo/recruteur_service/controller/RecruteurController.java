@@ -1,6 +1,7 @@
 package com.gogo.recruteur_service.controller;
 
 import com.gogo.recruteur_service.dto.RecruteurDTO;
+import com.gogo.recruteur_service.exception.RecruteurNotFoundException;
 import com.gogo.recruteur_service.service.RecruteurService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,17 +28,17 @@ public class RecruteurController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<RecruteurDTO> getRecruteurById(@PathVariable("id") Long id) {
+    public ResponseEntity<RecruteurDTO> getRecruteurById(@PathVariable("id") Long id) throws RecruteurNotFoundException {
         return ResponseEntity.ok(recruteurService.getRecruteurById(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<RecruteurDTO> updateRecruteur(@PathVariable("id") Long id, @RequestBody RecruteurDTO dto) {
+    public ResponseEntity<RecruteurDTO> updateRecruteur(@PathVariable("id") Long id, @RequestBody RecruteurDTO dto) throws RecruteurNotFoundException {
         return ResponseEntity.ok(recruteurService.updateRecruteur(id, dto));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteRecruteur(@PathVariable("id") Long id) {
+    public ResponseEntity<Void> deleteRecruteur(@PathVariable("id") Long id) throws RecruteurNotFoundException {
         recruteurService.deleteRecruteur(id);
         return ResponseEntity.noContent().build();
     }

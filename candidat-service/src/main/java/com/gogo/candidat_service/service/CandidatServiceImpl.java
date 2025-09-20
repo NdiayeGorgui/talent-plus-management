@@ -1,14 +1,14 @@
 package com.gogo.candidat_service.service;
 
 import com.gogo.candidat_service.dto.CandidatDTO;
+import com.gogo.candidat_service.dto.CandidatResponseDTO;
 import com.gogo.candidat_service.dto.PostulerRequest;
+import com.gogo.candidat_service.exception.CandidatNotFoundException;
 import com.gogo.candidat_service.mapper.*;
 import com.gogo.candidat_service.model.*;
 import com.gogo.candidat_service.repository.CandidatRepository;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
-;
 
 @Service
 public class CandidatServiceImpl implements CandidatService {
@@ -26,7 +26,7 @@ public class CandidatServiceImpl implements CandidatService {
     }
 
     @Override
-    public CandidatDTO updateCandidat(Long id, Candidat candidat) {
+    public CandidatDTO updateCandidat(Long id, Candidat candidat) throws CandidatNotFoundException {
         return candidatRepository.findById(id)
                 .map(existing -> {
                     existing.setNom(candidat.getNom());
@@ -38,76 +38,70 @@ public class CandidatServiceImpl implements CandidatService {
                     Candidat updated = candidatRepository.save(existing);
                     return CandidatMapper.toDTO(updated);
                 })
-                .orElseThrow(() -> new RuntimeException("Candidat non trouvé avec id " + id));
+                .orElseThrow(() -> new CandidatNotFoundException("Candidate not available with id: " + id));
     }
 
     @Override
-    public void deleteCandidat(Long id) {
+    public void deleteCandidat(Long id) throws CandidatNotFoundException {
+        if (!candidatRepository.existsById(id)) {
+            throw new CandidatNotFoundException("Candidate not available with id: " + id);
+        }
         candidatRepository.deleteById(id);
     }
 
     @Override
-    public CandidatDTO getCandidatById(Long id) {
+    public CandidatResponseDTO getCandidatById(Long id) throws CandidatNotFoundException {
         return candidatRepository.findById(id)
-                .map(CandidatMapper::toDTO)
-                .orElseThrow(() -> new RuntimeException("Candidat non trouvé avec id " + id));
+                .map(CandidatMapper::toResponseDTO)
+                .orElseThrow(() -> new CandidatNotFoundException("Candidate not available with id: " + id));
     }
 
-
     @Override
-    public CandidatDTO getCandidatByEmail(String email) {
+    public CandidatResponseDTO getCandidatByEmail(String email) throws CandidatNotFoundException {
         return candidatRepository.findByEmail(email)
-                .map(CandidatMapper::toDTO)
-                .orElseThrow(() -> new RuntimeException("Candidat non trouvé avec email " + email));
+                .map(CandidatMapper::toResponseDTO)
+                .orElseThrow(() -> new CandidatNotFoundException("Candidate not available with email: " + email));
     }
 
-
     @Override
-    public List<CandidatDTO> getAllCandidats() {
+    public List<CandidatResponseDTO> getAllCandidats() {
         return candidatRepository.findAll()
                 .stream()
-                .map(CandidatMapper::toDTO)
+                .map(CandidatMapper::toResponseDTO)
                 .toList();
     }
 
-
     @Override
-    public List<CandidatDTO> searchCandidats(String keyword) {
+    public List<CandidatResponseDTO> searchCandidats(String keyword) {
         return candidatRepository
                 .findByNomContainingIgnoreCaseOrPrenomContainingIgnoreCase(keyword, keyword)
                 .stream()
-                .map(CandidatMapper::toDTO) // conversion vers DTO
+                .map(CandidatMapper::toResponseDTO)
                 .toList();
     }
 
-
     @Override
     public Candidat postuler(PostulerRequest request) {
-        // 1. Mapper le candidat
         Candidat candidat = CandidatMapper.fromRequest(request);
 
-        // 2. Mapper expériences
         if (request.getExperiences() != null) {
             request.getExperiences().forEach(dto ->
                     candidat.getExperiences().add(ExperienceMapper.fromDTO(dto, candidat))
             );
         }
 
-        // 3. Mapper compétences
         if (request.getCompetences() != null) {
             request.getCompetences().forEach(dto ->
                     candidat.getCompetences().add(CompetenceMapper.fromDTO(dto, candidat))
             );
         }
 
-        // 4. Mapper lettres
         if (request.getLettres() != null) {
             request.getLettres().forEach(dto ->
                     candidat.getLettres().add(LettreMapper.fromDTO(dto, candidat))
             );
         }
 
-        // 5. Mapper CV
         if (request.getCvs() != null) {
             request.getCvs().forEach(dto ->
                     candidat.getCvs().add(CvMapper.fromDTO(dto, candidat))
@@ -118,12 +112,9 @@ public class CandidatServiceImpl implements CandidatService {
     }
 
     @Override
-    public CandidatDTO findById(Long id) {
+    public CandidatResponseDTO findById(Long id) throws CandidatNotFoundException {
         return candidatRepository.findById(id)
-                .map(CandidatMapper::toDTO)
-                .orElseThrow(() -> new RuntimeException("Candidat introuvable avec id=" + id));
+                .map(CandidatMapper::toResponseDTO)
+                .orElseThrow(() -> new CandidatNotFoundException("Candidate not available with id: " + id));
     }
-
-
 }
-
