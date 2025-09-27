@@ -11,13 +11,13 @@ pipeline {
     stages {
         stage('Git clone') {
             steps {
-                git 'https://github.com/NdiayeGorgui/talent-plus-management.git'
+                // Force la branche main
+                git branch: 'main', url: 'https://github.com/NdiayeGorgui/talent-plus-management.git'
             }
         }
 
         stage('Maven Build (Multi-Module)') {
             steps {
-                // Nettoyage + Build complet avec tests
                 sh 'mvn clean install -DskipTests'
             }
         }
@@ -25,7 +25,6 @@ pipeline {
         stage('Docker Build & Tag') {
             steps {
                 script {
-                    // Map des modules -> noms d'images Docker
                     def modules = [
                         "api-gateway-service" : "gateway-service",
                         "candidat-service"    : "candidat-service",
@@ -41,8 +40,8 @@ pipeline {
 
                     modules.each { module, imageName ->
                         sh """
-                          docker build -t ${DOCKERHUB_USER}/${imageName}:latest ./${module}
-                          docker tag ${DOCKERHUB_USER}/${imageName}:latest ${DOCKERHUB_USER}/${imageName}:${VERSION}
+                            docker build -t ${DOCKERHUB_USER}/${imageName}:latest ./${module}
+                            docker tag ${DOCKERHUB_USER}/${imageName}:latest ${DOCKERHUB_USER}/${imageName}:${VERSION}
                         """
                     }
                 }
@@ -70,8 +69,8 @@ pipeline {
 
                         modules.each { module, imageName ->
                             sh """
-                              docker push ${DOCKERHUB_USER}/${imageName}:latest
-                              docker push ${DOCKERHUB_USER}/${imageName}:${VERSION}
+                                docker push ${DOCKERHUB_USER}/${imageName}:latest
+                                docker push ${DOCKERHUB_USER}/${imageName}:${VERSION}
                             """
                         }
                     }
