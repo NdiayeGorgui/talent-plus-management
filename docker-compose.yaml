@@ -1,17 +1,5 @@
 version: '3.8'
 services:
-  jenkins:
-    image: jenkins/jenkins:lts
-    container_name: jenkins
-    user: root   # Nécessaire pour accéder à /var/run/docker.sock
-    ports:
-      - "8090:8080"    # Interface Jenkins
-      - "50000:50000"  # Connexions agents (optionnel si pas d'agents)
-    volumes:
-      - jenkins_home:/var/jenkins_home
-      - /var/run/docker.sock:/var/run/docker.sock  # Pour accéder au Docker host
-      - /usr/bin/docker:/usr/bin/docker            # Pour accéder à la commande `docker`
-    restart: unless-stopped
 
   # Prometheus
   prometheus:
@@ -98,7 +86,7 @@ services:
 
     # Eureka Service Registry
   eureka-service:
-    build: ./eureka-service
+    image: gorgui/eureka-service:latest
     container_name: eureka-service
     ports:
       - '8761:8761'
@@ -114,7 +102,7 @@ services:
 
   # Config Service
   config-server:
-    build: ./config-service
+    image: gorgui/config-server
     container_name: config-server
     ports:
       - '9191:9191'
@@ -135,7 +123,7 @@ services:
 
   # API Gateway Service
   gateway-service:
-    build: ./api-gateway-service
+    image: gorgui/gateway-service:latest
     container_name: gateway-service
     ports:
       - '8888:8888'
@@ -152,7 +140,7 @@ services:
 
   # Candidat Service (utilise Kafka et se connecte à la BD)
   candidat-service:
-    build: ./candidat-service
+    image: gorgui/candidat-service:latest
     container_name: candidat-service
     ports:
       - "8081:8081"
@@ -185,7 +173,7 @@ services:
 
   # Offre Service (utilise Kafka et se connecte à la BD)
   offre-service:
-    build: ./offre-emploi-service
+    image: gorgui/offre-service:latest
     container_name: offre-service
     ports:
       - "8083:8083"
@@ -206,7 +194,7 @@ services:
 
   # Recrutement Service (utilise Kafka et se connecte à la BD)
   recrutement-service:
-    build: ./recrutement-service
+    image: gorgui/recrutement-service:latest
     container_name: recrutement-service
     ports:
       - "8085:8085"
@@ -231,7 +219,7 @@ services:
 
     # Recruteur Service (utilise Kafka et se connecte à la BD)
   recruteur-service:
-    build: ./recruteur-service
+    image: gorgui/recruteur-service:latest
     container_name: recruteur-service
     ports:
       - "8084:8084"
@@ -256,7 +244,7 @@ services:
 
   # Statistic Service (utilise Kafka et se connecte à la BD)
   statistic-service:
-    build: ./statistic-service
+    image: gorgui/statistic-service:latest
     container_name: statistic-service
     ports:
       - "8086:8086"
@@ -278,7 +266,7 @@ services:
 
   # Utilisateur Service
   utilisateur-service:
-    build: ./utilisateur-service
+    image: gorgui/utilisateur-service:latest
     container_name: utilisateur-service
     ports:
       - "8087:8087"
@@ -303,7 +291,7 @@ services:
 
     # Notification Service (utilise Kafka)
   notification-talent-service:
-    build: ./notification-service
+    image: gorgui/notification-talent-service:latest
     container_name: notification-talent-service
     ports:
       - "8082:8082"
@@ -328,7 +316,6 @@ services:
 
 volumes:
   talent_pg_data:
-  jenkins_home:
 
 networks:
   my_talent_network:

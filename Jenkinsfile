@@ -63,15 +63,7 @@ pipeline {
             }
         }
 
-        stage('Deploy with Docker Compose') {
-            steps {
-                echo "🚀 Déploiement avec docker-compose"
-                bat '''
-                    docker compose down || exit 0
-                    docker compose up -d
-                '''
-            }
-        }
+
     }
 
     post {
