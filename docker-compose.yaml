@@ -1,5 +1,17 @@
 version: '3.8'
 services:
+  jenkins:
+    image: jenkins/jenkins:lts
+    container_name: jenkins
+    user: root   # Nécessaire pour accéder à /var/run/docker.sock
+    ports:
+      - "8090:8080"    # Interface Jenkins
+      - "50000:50000"  # Connexions agents (optionnel si pas d'agents)
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock  # Pour accéder au Docker host
+      - /usr/bin/docker:/usr/bin/docker            # Pour accéder à la commande `docker`
+    restart: unless-stopped
 
   # Prometheus
   prometheus:
@@ -316,6 +328,7 @@ services:
 
 volumes:
   talent_pg_data:
+  jenkins_home:
 
 networks:
   my_talent_network:

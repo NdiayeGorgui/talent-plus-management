@@ -17,3 +17,29 @@ CREATE DATABASE recruteur_prod_db;
 CREATE DATABASE utilisateur_prod_db;
 CREATE DATABASE notification_talent_prod_db;
 \l
+
+
+version: '3.8'
+
+services:
+  jenkins:
+    image: jenkins/jenkins:lts
+    container_name: jenkins
+    ports:
+      - "8090:8080"       # Jenkins web UI
+      - "50000:50000"     # Jenkins agent port
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock  # donne accès à Docker de l’hôte
+    restart: unless-stopped
+
+volumes:
+  jenkins_home:
+
+
+
+
+
+
+docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword
+
