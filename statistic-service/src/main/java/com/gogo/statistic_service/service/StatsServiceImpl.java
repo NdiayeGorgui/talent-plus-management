@@ -4,7 +4,11 @@ import com.gogo.statistic_service.dto.CompetenceFrequencyDTO;
 import com.gogo.statistic_service.dto.MonthlyCountDTO;
 import com.gogo.statistic_service.dto.StatutCountDTO;
 import com.gogo.statistic_service.exception.StatServiceException;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
@@ -18,6 +22,7 @@ import java.util.Map;
 @Slf4j
 @Service
 public class StatsServiceImpl implements StatsService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(StatsServiceImpl.class);
 
     private final WebClient competenceWebClient;
     private final WebClient recrutementWebClient;
@@ -30,8 +35,11 @@ public class StatsServiceImpl implements StatsService {
     }
 
     // --- 1. Nombre de candidatures par statut ---
+    //@Retry(name = "${spring.application.name}", fallbackMethod = "getDefaultCandidaturesParStatut")
+    @CircuitBreaker(name = "${spring.application.name}",fallbackMethod = "getDefaultCandidaturesParStatut")
     @Override
     public List<StatutCountDTO> getCandidaturesParStatut() {
+        LOGGER.info("inside getCandidaturesParStatut");
         try {
             return recrutementWebClient.get()
                     .uri("/candidatures-par-statut")
@@ -49,6 +57,7 @@ public class StatsServiceImpl implements StatsService {
     }
 
     // --- 2. Nombre de candidatures par mois ---
+    @CircuitBreaker(name = "${spring.application.name}", fallbackMethod = "getDefaultCandidaturesParMois")
     @Override
     public List<MonthlyCountDTO> getCandidaturesParMois() {
         try {
@@ -72,6 +81,8 @@ public class StatsServiceImpl implements StatsService {
     }
 
     // --- 3. Compétences fréquentes ---
+    @CircuitBreaker(name = "${spring.application.name}", fallbackMethod = "getDefaultCompetencesFrequentes")
+
     @Override
     public List<CompetenceFrequencyDTO> getCompetencesFrequentes() {
         try {
@@ -89,4 +100,35 @@ public class StatsServiceImpl implements StatsService {
             throw new StatServiceException("Erreur interne du service de statistiques", e);
         }
     }
+
+    public List<StatutCountDTO> getDefaultCandidaturesParStatut(Throwable throwable) {
+        LOGGER.info("inside getDefaultCandidaturesParStatut");
+        log.warn("Fallback activé pour getCandidaturesParStatut : {}", throwable.getMessage());
+        return List.of(
+                new StatutCountDTO("EN_ATTENTE", 12L),
+                new StatutCountDTO("EN_COURS", 8L),
+                new StatutCountDTO("REFUSE", 5L),
+                new StatutCountDTO("ACCEPTE", 3L)
+        );
+    }
+
+    public List<MonthlyCountDTO> getDefaultCandidaturesParMois(Throwable throwable) {
+        log.warn("Fallback activé pour getCandidaturesParMois : {}", throwable.getMessage());
+        return List.of(
+                new MonthlyCountDTO("2025-07", 10L),
+                new MonthlyCountDTO("2025-08", 15L),
+                new MonthlyCountDTO("2025-09", 20L)
+        );
+    }
+    public List<CompetenceFrequencyDTO> getDefaultCompetencesFrequentes(Throwable throwable) {
+        log.warn("Fallback activé pour getCompetencesFrequentes : {}", throwable.getMessage());
+        return List.of(
+                new CompetenceFrequencyDTO("Java", 30L),
+                new CompetenceFrequencyDTO("Spring Boot", 25L),
+                new CompetenceFrequencyDTO("React", 18L),
+                new CompetenceFrequencyDTO("SQL", 20L)
+        );
+    }
+
+
 }

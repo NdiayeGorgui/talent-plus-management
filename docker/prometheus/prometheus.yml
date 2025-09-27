@@ -1,0 +1,68 @@
+global:
+  scrape_interval: 10s
+  evaluation_interval: 10s
+
+scrape_configs:
+  - job_name: 'candidat_service'
+    metrics_path: '/actuator/prometheus'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['candidat-service:8081']
+        labels:
+          application: 'Candidat Service Application'
+
+  - job_name: 'offre_service'
+    metrics_path: '/actuator/prometheus'
+    scrape_interval: 5s
+    static_configs:
+      - targets: [ 'offre-service:8083' ]
+        labels:
+          application: 'Offre Service Application'
+
+  - job_name: 'recrutement_service'
+    metrics_path: '/actuator/prometheus'
+    scrape_interval: 5s
+    static_configs:
+      - targets: [ 'recrutement-service:8085' ]
+        labels:
+          application: 'Recrutement Service Application'
+
+  - job_name: 'recruteur-service'
+    metrics_path: '/actuator/prometheus'
+    scrape_interval: 5s
+    static_configs:
+      - targets: [ 'recruteur-service:8084' ]
+        labels:
+          application: 'Recruteur Service Application'
+
+  - job_name: 'statistic_service'
+    metrics_path: '/actuator/prometheus'
+    scrape_interval: 5s
+    static_configs:
+      - targets: [ 'statistic-service:8086' ]
+        labels:
+          application: 'Statistic Service Application'
+
+  - job_name: 'notification_talent_service'
+    metrics_path: '/actuator/prometheus'
+    scrape_interval: 5s
+    static_configs:
+      - targets: [ 'notification-talent-service:8082' ]
+        labels:
+          application: 'Notification Service Application'
+
+  - job_name: 'utilisateur_service'
+    metrics_path: '/actuator/prometheus'
+    scrape_interval: 5s
+    static_configs:
+      - targets: [ 'utilisateur-service:8087' ]
+        labels:
+          application: 'Utilisateur Service Application'
+
+  - job_name: 'gateway_service'
+    metrics_path: '/actuator/prometheus'
+    scrape_interval: 5s
+    static_configs:
+      - targets: [ 'gateway-service:8888' ]
+        labels:
+          application: 'Api Gateway Service Application'
