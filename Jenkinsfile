@@ -14,14 +14,23 @@ pipeline {
     }
 
     stages {
+        stage('Clean Workspace') {
+            steps {
+                echo "🧹 Nettoyage de l'espace de travail"
+                deleteDir()
+            }
+        }
+
         stage('Git Clone') {
             steps {
+                echo "🔄 Clonage du dépôt Git"
                 git branch: 'main', url: 'https://github.com/NdiayeGorgui/talent-plus-management.git'
             }
         }
 
         stage('Maven Build (Multi-Module)') {
             steps {
+                echo "⚙️ Build Maven multi-module"
                 sh 'mvn clean install -DskipTests'
             }
         }
@@ -43,7 +52,7 @@ pipeline {
                     ]
 
                     modules.each { module, imageName ->
-                        echo "🔧 Building Docker image for ${module} -> ${imageName}"
+                        echo "🔧 Construction de l'image Docker pour ${module} -> ${imageName}"
                         sh """
                             docker build -t ${DOCKERHUB_USER}/${imageName}:latest ./${module}
                             docker tag ${DOCKERHUB_USER}/${imageName}:latest ${DOCKERHUB_USER}/${imageName}:${VERSION}
@@ -56,6 +65,7 @@ pipeline {
         stage('Docker Login & Push') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    echo "🔐 Connexion à DockerHub"
                     sh 'echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin'
 
                     script {
@@ -73,7 +83,7 @@ pipeline {
                         ]
 
                         modules.each { module, imageName ->
-                            echo "📤 Pushing ${imageName} to DockerHub"
+                            echo "📤 Poussée de ${imageName} sur DockerHub"
                             sh """
                                 docker push ${DOCKERHUB_USER}/${imageName}:latest
                                 docker push ${DOCKERHUB_USER}/${imageName}:${VERSION}
@@ -86,7 +96,7 @@ pipeline {
 
         stage('Deploy with Docker Compose') {
             steps {
-                echo "🚀 Deploying with docker-compose"
+                echo "🚀 Déploiement avec docker-compose"
                 sh '''
                     docker compose down || true
                     docker compose up -d
