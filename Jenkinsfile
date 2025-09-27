@@ -1,5 +1,10 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'maven:3.9.6-eclipse-temurin-17' // Maven + JDK 17
+            args '-v /var/run/docker.sock:/var/run/docker.sock'
+        }
+    }
 
     environment {
         REGISTRY = "docker.io"
@@ -11,7 +16,6 @@ pipeline {
     stages {
         stage('Git clone') {
             steps {
-                // Force la branche main
                 git branch: 'main', url: 'https://github.com/NdiayeGorgui/talent-plus-management.git'
             }
         }
