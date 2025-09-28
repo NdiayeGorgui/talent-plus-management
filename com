@@ -46,3 +46,5 @@ docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword
 
 
  build: ./candidat-service
+
+ java -jar jenkins.war --httpPort=8080
