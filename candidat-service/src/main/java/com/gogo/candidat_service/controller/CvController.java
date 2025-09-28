@@ -3,7 +3,6 @@ package com.gogo.candidat_service.controller;
 import com.gogo.candidat_service.dto.CvDTO;
 import com.gogo.candidat_service.exception.CandidatNotFoundException;
 import com.gogo.candidat_service.exception.CvNotFoundException;
-import com.gogo.candidat_service.model.CV;
 import com.gogo.candidat_service.service.CvService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 
-@CrossOrigin("*")
 @RestController
 @RequestMapping("/api/v1/cvs")
 public class CvController {
