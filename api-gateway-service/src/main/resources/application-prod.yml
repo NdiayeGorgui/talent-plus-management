@@ -1,0 +1,22 @@
+spring:
+  cloud:
+    gateway:
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "http://localhost:4200"
+              - "http://localhost:4300"
+            allowedHeaders: "*"
+            allowedMethods:
+              - GET
+              - POST
+              - DELETE
+              - PUT
+              - OPTIONS
+            allowCredentials: true
+      routes:
+        - id: notification-talent-service-custom
+          uri: lb://NOTIFICATION-TALENT-SERVICE
+          predicates:
+            - Path=/notification-talent-service/api/v1/notifications/**
