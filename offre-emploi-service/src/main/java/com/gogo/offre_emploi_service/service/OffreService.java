@@ -13,6 +13,7 @@ public interface OffreService {
     void deleteOffre(Long id) throws OffreNotFoundException;
 
     void closeOffre(Long id) throws OffreNotFoundException;
+    void openOffre(Long id) throws OffreNotFoundException;
 
     List<OffreDTO> getAllOffres();
 

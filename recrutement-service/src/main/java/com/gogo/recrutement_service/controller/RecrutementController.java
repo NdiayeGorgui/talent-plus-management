@@ -4,6 +4,7 @@ import com.gogo.recrutement_service.dto.PostulerDTO;
 import com.gogo.recrutement_service.dto.ProcessusDTO;
 import com.gogo.recrutement_service.dto.HistoriqueDTO;
 import com.gogo.recrutement_service.dto.StatutCountDTO;
+import com.gogo.recrutement_service.enums.StatutProcessus;
 import com.gogo.recrutement_service.exception.CandidatNotFoundException;
 import com.gogo.recrutement_service.exception.NotificationException;
 import com.gogo.recrutement_service.exception.OffreNotFoundException;
@@ -79,11 +80,11 @@ public class RecrutementController {
     public List<StatutCountDTO> getCandidaturesParStatut() {
         return recrutementService.getAllProcessus().stream()
                 .collect(Collectors.groupingBy(
-                        p -> Optional.ofNullable(p.getStatut()).orElse("INCONNU"),
+                        p -> Optional.ofNullable(p.getStatut()).orElse(StatutProcessus.INCONNU),
                         Collectors.counting()
                 ))
                 .entrySet().stream()
-                .map(e -> new StatutCountDTO(e.getKey(), e.getValue()))
+                .map(e -> new StatutCountDTO(e.getKey().name(), e.getValue()))
                 .collect(Collectors.toList());
     }
 

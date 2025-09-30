@@ -35,6 +35,13 @@ public class OffreController {
         return ResponseEntity.ok().build();
     }
 
+    @PutMapping("/{id}/open")
+    public ResponseEntity<Void> openOffre(@PathVariable("id") Long id) throws OffreNotFoundException {
+        offreService.openOffre(id); // Implémente cette méthode dans le service si pas encore fait
+        return ResponseEntity.ok().build();
+    }
+
+
     @GetMapping
     public ResponseEntity<List<OffreDTO>> getAllOffres() {
         return ResponseEntity.ok(offreService.getAllOffres());

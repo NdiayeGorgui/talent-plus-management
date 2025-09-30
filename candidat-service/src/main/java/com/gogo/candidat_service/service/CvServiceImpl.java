@@ -10,8 +10,11 @@ import com.gogo.candidat_service.repository.CVRepository;
 import com.gogo.candidat_service.repository.CandidatRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -106,5 +109,18 @@ public class CvServiceImpl implements CvService {
         if (file.exists()) file.delete();
 
         cvRepository.delete(cv);
+    }
+
+    @Override
+    public Resource downloadCv(Long cvId) throws IOException {
+        CV cv = cvRepository.findById(cvId)
+                .orElseThrow(() -> new IOException("CV introuvable avec id " + cvId));
+
+        File file = new File(cv.getFichierUrl());
+        if (!file.exists()) {
+            throw new IOException("Fichier non trouvé sur le disque pour le CV ID " + cvId);
+        }
+
+        return new InputStreamResource(new FileInputStream(file));
     }
 }

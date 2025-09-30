@@ -66,6 +66,15 @@ public class OffreServiceImpl implements OffreService {
     }
 
     @Override
+    public void openOffre(Long id) throws OffreNotFoundException {
+            Offre offre = offreRepository.findById(id)
+                    .orElseThrow(() -> new OffreNotFoundException("Offre non trouvée"));
+            offre.setActive(true);
+            offreRepository.save(offre);
+
+    }
+
+    @Override
     public List<OffreDTO> getAllOffres() {
         return offreRepository.findAll().stream()
                 .map(OffreMapper::toDTO)

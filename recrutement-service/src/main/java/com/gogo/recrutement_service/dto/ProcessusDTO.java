@@ -1,5 +1,6 @@
 package com.gogo.recrutement_service.dto;
 
+import com.gogo.recrutement_service.enums.StatutProcessus;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -8,7 +9,7 @@ public class ProcessusDTO {
     private Long id;
     private Long candidatId;
     private Long offreId;
-    private String statut;
+    private StatutProcessus statut;
     private LocalDateTime dateMaj;
 
 }

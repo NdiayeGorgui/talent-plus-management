@@ -4,6 +4,8 @@ import com.gogo.candidat_service.dto.CvDTO;
 import com.gogo.candidat_service.exception.CandidatNotFoundException;
 import com.gogo.candidat_service.exception.CvNotFoundException;
 import com.gogo.candidat_service.service.CvService;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,6 +38,18 @@ public class CvController {
             @RequestParam("file") MultipartFile file,
             @RequestParam(value = "titre", required = false) String titre) throws IOException, CvNotFoundException {
         return ResponseEntity.ok(cvService.replaceCv(cvId, file, titre));
+    }
+
+    @GetMapping("/download/{id}")
+    public ResponseEntity<Resource> downloadCv(@PathVariable Long id) throws IOException {
+        Resource file = cvService.downloadCv(id);
+
+        String fileName = "cv_" + id + ".pdf"; // tu peux améliorer ce nom avec le vrai nom de fichier si besoin
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(file);
     }
 
     // 🔹 Supprimer un CV

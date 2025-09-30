@@ -3,6 +3,7 @@ package com.gogo.recrutement_service.service;
 import com.gogo.base_domaine_service.dto.NotificationMessage;
 import com.gogo.recrutement_service.dto.HistoriqueDTO;
 import com.gogo.recrutement_service.dto.ProcessusDTO;
+import com.gogo.recrutement_service.enums.StatutProcessus;
 import com.gogo.recrutement_service.exception.CandidatNotFoundException;
 import com.gogo.recrutement_service.exception.OffreNotFoundException;
 import com.gogo.recrutement_service.exception.ProcessusNotFoundException;
@@ -84,7 +85,7 @@ public class RecrutementServiceImpl implements RecrutementService {
         Processus processus = new Processus();
         processus.setCandidatId(candidatId);
         processus.setOffreId(offreId);
-        processus.setStatut("RECU");
+        processus.setStatut(StatutProcessus.RECU.name());
         processus.setDateMaj(LocalDateTime.now());
 
         Processus saved = processusRepository.save(processus);
@@ -93,7 +94,7 @@ public class RecrutementServiceImpl implements RecrutementService {
         // Historique initial
         Historique historique = new Historique();
         historique.setProcessusId(saved.getId());
-        historique.setStatut("RECU");
+        historique.setStatut(StatutProcessus.RECU.name());
         historique.setDateChangement(LocalDateTime.now());
         historique.setRecruteur("SYSTEM"); // à remplacer par user connecté
         historiqueRepository.save(historique);
