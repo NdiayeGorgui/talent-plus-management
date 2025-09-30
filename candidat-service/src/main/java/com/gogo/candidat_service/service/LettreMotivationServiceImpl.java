@@ -8,10 +8,13 @@ import com.gogo.candidat_service.model.Candidat;
 import com.gogo.candidat_service.model.LettreMotivation;
 import com.gogo.candidat_service.repository.CandidatRepository;
 import com.gogo.candidat_service.repository.LettreMotivationRepository;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -119,4 +122,18 @@ public class LettreMotivationServiceImpl implements LettreMotivationService {
         LettreMotivation savedLettre = lettreRepository.save(oldLettre);
         return LettreMapper.toDTO(savedLettre);
     }
+
+    @Override
+    public Resource downloadLettre(Long lettreId) throws IOException {
+        LettreMotivation lettre = lettreRepository.findById(lettreId)
+                .orElseThrow(() -> new IOException("Lettre introuvable avec id " + lettreId));
+
+        File file = new File(lettre.getFichierUrl());
+        if (!file.exists()) {
+            throw new IOException("Fichier non trouvé sur le disque pour la lettre ID " + lettreId);
+        }
+
+        return new InputStreamResource(new FileInputStream(file));
+    }
+
 }

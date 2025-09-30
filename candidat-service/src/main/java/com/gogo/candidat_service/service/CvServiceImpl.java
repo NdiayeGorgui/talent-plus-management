@@ -123,4 +123,12 @@ public class CvServiceImpl implements CvService {
 
         return new InputStreamResource(new FileInputStream(file));
     }
+    @Override
+    public String getCvFilePath(Long cvId) throws IOException {
+        CV cv = cvRepository.findById(cvId)
+                .orElseThrow(() -> new IOException("CV introuvable avec id " + cvId));
+
+        return cv.getFichierUrl(); // ex: /home/username/uploads/cv/1696002356231_cv.docx
+    }
+
 }

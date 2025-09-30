@@ -16,4 +16,5 @@ public interface CvService {
     List<CvDTO> getCvsByCandidat(Long candidatId) throws CandidatNotFoundException;
     void deleteCv(Long cvId) throws CvNotFoundException;
     Resource downloadCv(Long cvId) throws IOException;
+    String getCvFilePath(Long cvId) throws IOException;
 }
