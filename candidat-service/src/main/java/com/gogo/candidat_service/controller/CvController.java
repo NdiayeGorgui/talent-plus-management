@@ -41,7 +41,7 @@ public class CvController {
     }
 
     @GetMapping("/download/{id}")
-    public ResponseEntity<Resource> downloadCv(@PathVariable Long id) throws IOException {
+    public ResponseEntity<Resource> downloadCv(@PathVariable("id") Long id) throws IOException {
         Resource file = cvService.downloadCv(id);
 
         String fileName = "cv_" + id + ".pdf"; // tu peux améliorer ce nom avec le vrai nom de fichier si besoin
