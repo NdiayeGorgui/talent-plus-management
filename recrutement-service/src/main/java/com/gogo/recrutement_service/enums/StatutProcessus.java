@@ -6,6 +6,6 @@ public enum StatutProcessus {
     PROPOSITION,   // Offre envoyée au candidat
     ACCEPTE,       // Offre acceptée
     REFUSE,         // Offre refusée ou candidature rejetée
-    EN_ATTENTE,
+    NON_RETENU,
     INCONNU
 }

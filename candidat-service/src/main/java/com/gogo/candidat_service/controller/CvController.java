@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.List;
 
 @RestController
@@ -44,33 +45,34 @@ public class CvController {
     @GetMapping("/download/{id}")
     public ResponseEntity<Resource> downloadCv(@PathVariable("id") Long id) throws IOException {
         Resource file = cvService.downloadCv(id);
-
-        // 🔍 Récupérer le chemin complet du fichier depuis le service
-        String fullPath = cvService.getCvFilePath(id); // Nouvelle méthode à créer
+        String fullPath = cvService.getCvFilePath(id);
         File actualFile = new File(fullPath);
 
         if (!actualFile.exists()) {
             throw new FileNotFoundException("Fichier non trouvé pour le CV ID " + id);
         }
 
-        // 🔍 Extraire l'extension (ex: ".docx" ou ".pdf")
-        String originalFileName = actualFile.getName(); // Ex: 1696002356231_CV_Marouane.docx
+        String originalFileName = actualFile.getName();
         String extension = "";
 
         int dotIndex = originalFileName.lastIndexOf('.');
         if (dotIndex > 0 && dotIndex < originalFileName.length() - 1) {
-            extension = originalFileName.substring(dotIndex); // ".docx"
+            extension = originalFileName.substring(dotIndex);
         }
 
-        // 📝 Nom de téléchargement
         String downloadFileName = "cv_" + id + extension;
+
+        // 🔥 Détection du vrai content type
+        String mimeType = Files.probeContentType(actualFile.toPath());
+        if (mimeType == null) {
+            mimeType = "application/octet-stream";
+        }
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + downloadFileName + "\"")
-                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .contentType(MediaType.parseMediaType(mimeType))
                 .body(file);
     }
-
 
     // 🔹 Supprimer un CV
     @DeleteMapping("/{cvId}")
