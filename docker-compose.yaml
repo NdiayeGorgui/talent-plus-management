@@ -146,10 +146,8 @@ services:
       - "8081:8081"
     expose:
       - "8081"
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://candidat-service:8081/actuator/health" ]
-      interval: 10s
-      retries: 4
+    volumes:
+      - ./data/uploads/cv:/app/uploads/cv    # Volume persistant local
     environment:
       - SPRING_PROFILES_ACTIVE=prod
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/candidat_prod_db
@@ -157,6 +155,7 @@ services:
       - SPRING_DATASOURCE_PASSWORD=userpassword
       - eureka.client.service-url.defaultZone=http://eureka-service:8761/eureka/
       - SPRING_CONFIG_IMPORT=configserver:http://config-server:9191/
+      - CV_UPLOAD_DIR=/app/uploads/cv        # Config pour ton service
     depends_on:
       eureka-service:
         condition: service_healthy
@@ -170,6 +169,7 @@ services:
         condition: service_started
     networks:
       - my_talent_network
+
 
   # Offre Service (utilise Kafka et se connecte à la BD)
   offre-service:

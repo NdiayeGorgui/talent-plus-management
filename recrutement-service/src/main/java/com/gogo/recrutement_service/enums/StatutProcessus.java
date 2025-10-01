@@ -5,7 +5,8 @@ public enum StatutProcessus {
     ENTRETIEN,     // Entretien planifié/passer
     PROPOSITION,   // Offre envoyée au candidat
     ACCEPTE,       // Offre acceptée
-    REFUSE,         // Offre refusée ou candidature rejetée
+    REFUSE,
+    EN_ATTENTE,// Offre refusée ou candidature rejetée
     NON_RETENU,
     INCONNU
 }
