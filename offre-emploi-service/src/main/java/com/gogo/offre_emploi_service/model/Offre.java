@@ -2,8 +2,11 @@ package com.gogo.offre_emploi_service.model;
 
 
 import jakarta.persistence.*;
+import lombok.Data;
+
 import java.time.LocalDateTime;
 
+@Data
 @Entity
 @Table(name = "offres")
 public class Offre {
@@ -18,23 +21,12 @@ public class Offre {
     private String description;
 
     private LocalDateTime datePublication = LocalDateTime.now();
-
+    private String categorie;
+    private String ville;
+    private String pays;
     private boolean active = true; // pour clôturer l'offre
     // association via id seulement (microservice Recruteur séparé)
     private Long recruteurId;
 
-    // getters et setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public String getTitre() { return titre; }
-    public void setTitre(String titre) { this.titre = titre; }
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
-    public LocalDateTime getDatePublication() { return datePublication; }
-    public void setDatePublication(LocalDateTime datePublication) { this.datePublication = datePublication; }
-    public boolean isActive() { return active; }
-    public void setActive(boolean active) { this.active = active; }
-    public Long getRecruteurId() { return recruteurId; }
-    public void setRecruteurId(Long recruteurId) { this.recruteurId = recruteurId; }
 }
 

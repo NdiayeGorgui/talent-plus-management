@@ -45,6 +45,9 @@ public class OffreServiceImpl implements OffreService {
         // Mettre à jour les champs principaux
         offre.setTitre(dto.getTitre());
         offre.setDescription(dto.getDescription());
+        offre.setCategorie(dto.getCategorie());
+        offre.setVille(dto.getVille());
+        offre.setPays(dto.getPays());
         offre.setActive(dto.isActive());
 
         if (dto.getDatePublication() != null) {
