@@ -43,7 +43,11 @@ public class RecruteurServiceImpl implements RecruteurService {
         Recruteur updated = recruteurRepository.findById(id)
                 .map(existing -> {
                     existing.setNom(dto.getNom());
+                    existing.setPrenom(dto.getPrenom());
                     existing.setEmail(dto.getEmail());
+                    existing.setTelephone(dto.getTelephone());
+                    existing.setPoste(dto.getPoste());
+                    existing.setNiveau(dto.getNiveau());
                     return recruteurRepository.save(existing);
                 })
                 .orElseThrow(() -> new RecruteurNotFoundException("Recruteur non trouvé avec id " + id));

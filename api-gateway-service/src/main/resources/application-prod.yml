@@ -15,8 +15,20 @@ spring:
               - PUT
               - OPTIONS
             allowCredentials: true
+            exposedHeaders:       # 👈 permet à Angular de lire ces headers
+              - Content-Disposition
+              - Content-Type
+
       routes:
         - id: notification-talent-service-custom
           uri: lb://NOTIFICATION-TALENT-SERVICE
           predicates:
             - Path=/notification-talent-service/api/v1/notifications/**
+
+        - id: cv-download-service
+          uri: lb://CANDIDAT-SERVICE
+          predicates:
+            - Path=/candidat-service/api/v1/cvs/download/**
+          filters:
+            # 👇 Ajoute les headers exposés dans la réponse
+            - AddResponseHeader=Access-Control-Expose-Headers, Content-Disposition, Content-Type

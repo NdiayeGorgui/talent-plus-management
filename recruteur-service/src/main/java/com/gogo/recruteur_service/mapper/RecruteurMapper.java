@@ -9,7 +9,12 @@ public class RecruteurMapper {
         Recruteur recruteur = new Recruteur();
        // recruteur.setId(dto.getId()); // optionnel si auto-généré
         recruteur.setNom(dto.getNom());
+        recruteur.setPrenom(dto.getPrenom());
         recruteur.setEmail(dto.getEmail());
+        recruteur.setTelephone(dto.getTelephone());
+        recruteur.setPoste(dto.getPoste());
+        recruteur.setNiveau(dto.getNiveau());
+
         return recruteur;
     }
 
@@ -17,7 +22,11 @@ public class RecruteurMapper {
         RecruteurDTO dto = new RecruteurDTO();
         dto.setId(recruteur.getId());
         dto.setNom(recruteur.getNom());
+        dto.setPrenom(recruteur.getPrenom());
         dto.setEmail(recruteur.getEmail());
+        dto.setTelephone(recruteur.getTelephone());
+        dto.setPoste(recruteur.getPoste());
+        dto.setNiveau(recruteur.getNiveau());
         return dto;
     }
 }
