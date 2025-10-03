@@ -14,11 +14,6 @@ public class CandidatMapper {
         candidat.setTelephone(request.getTelephone());
         candidat.setDateNaissance(request.getDateNaissance());
         candidat.setAdresse(request.getAdresse());
-        candidat.setDisponibilite(
-                request.getDisponibilite() != null
-                        ? Disponibilite.valueOf(request.getDisponibilite())
-                        : Disponibilite.DISPONIBLE
-        );
         return candidat;
     }
 

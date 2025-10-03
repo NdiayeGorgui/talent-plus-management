@@ -1,5 +1,6 @@
 package com.gogo.candidat_service.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.gogo.candidat_service.enums.Disponibilite;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -24,6 +25,7 @@ public class MetadonneeRH {
     private String source;  //(site carrière, LinkedIn, recommandation, candidature directe, etc.)
 
     // Relation avec candidat
+    @JsonIgnore
     @OneToOne
     @JoinColumn(name = "candidat_id", nullable = false)
     private Candidat candidat;
