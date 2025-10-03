@@ -12,7 +12,6 @@ public class CandidatDTO {
     private String telephone;
     private LocalDate dateNaissance;
     private String adresse;
-    private String disponibilite;
 
 }
 

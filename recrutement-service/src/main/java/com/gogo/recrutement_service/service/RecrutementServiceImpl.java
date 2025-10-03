@@ -4,6 +4,7 @@ import com.gogo.base_domaine_service.dto.NotificationMessage;
 import com.gogo.recrutement_service.dto.HistoriqueDTO;
 import com.gogo.recrutement_service.dto.ProcessusDTO;
 import com.gogo.recrutement_service.enums.StatutProcessus;
+import com.gogo.recrutement_service.enums.TypeCandidature;
 import com.gogo.recrutement_service.exception.CandidatNotFoundException;
 import com.gogo.recrutement_service.exception.OffreNotFoundException;
 import com.gogo.recrutement_service.exception.ProcessusNotFoundException;
@@ -85,6 +86,7 @@ public class RecrutementServiceImpl implements RecrutementService {
         Processus processus = new Processus();
         processus.setCandidatId(candidatId);
         processus.setOffreId(offreId);
+        processus.setTypeCandidature(TypeCandidature.OFFRE);
         processus.setStatut(StatutProcessus.RECU.name());
         processus.setDateMaj(LocalDateTime.now());
 
@@ -172,4 +174,100 @@ public class RecrutementServiceImpl implements RecrutementService {
                 .map(HistoriqueMapper::toDTO)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public ProcessusDTO createProcessusSpontane(Long candidatId, String messageMotivation)
+            throws NotificationException, CandidatNotFoundException {
+
+        validateCandidatExists(candidatId);
+
+        log.info("➡️ Création d'un processus SPONTANÉ pour candidatId={}", candidatId);
+
+        Processus processus = new Processus();
+        processus.setCandidatId(candidatId);
+        processus.setOffreId(null); // 👈 pas d’offre
+        processus.setTypeCandidature(TypeCandidature.SPONTANEE);
+        processus.setStatut(StatutProcessus.RECU.name());
+        processus.setDateMaj(LocalDateTime.now());
+
+        Processus saved = processusRepository.save(processus);
+
+        // Historique initial
+        Historique historique = new Historique();
+        historique.setProcessusId(saved.getId());
+        historique.setStatut(StatutProcessus.RECU.name());
+        historique.setDateChangement(LocalDateTime.now());
+        historique.setRecruteur("SYSTEM");
+        historiqueRepository.save(historique);
+
+        // Notification
+        NotificationMessage msg = new NotificationMessage(saved.getCandidatId(), "SPONTANEE", LocalDateTime.now());
+        try {
+            amqpTemplate.convertAndSend("notificationExchange", "candidat.statut", msg);
+        } catch (Exception e) {
+            throw new NotificationException("Échec de l’envoi de la notification pour le candidat " + saved.getCandidatId());
+        }
+
+        return ProcessusMapper.toDTO(saved);
+    }
+
+    @Override
+    public ProcessusDTO lierCandidatureSpontanee(Long processusId, Long offreId)
+            throws ProcessusNotFoundException, OffreNotFoundException, NotificationException {
+
+        // Vérifier que le processus existe
+        Processus processus = processusRepository.findById(processusId)
+                .orElseThrow(() -> new ProcessusNotFoundException("Processus introuvable avec id " + processusId));
+
+        // Vérifier que c'était bien une candidature spontanée
+        if (processus.getTypeCandidature() != TypeCandidature.SPONTANEE) {
+            throw new IllegalStateException("Ce processus n'est pas une candidature spontanée !");
+        }
+
+        // Vérifier que l'offre existe
+        validateOffreExists(offreId);
+
+        // Mise à jour
+        processus.setOffreId(offreId);
+        processus.setTypeCandidature(TypeCandidature.OFFRE);
+        processus.setDateMaj(LocalDateTime.now());
+
+        Processus saved = processusRepository.save(processus);
+
+        // Historique
+        Historique historique = new Historique();
+        historique.setProcessusId(saved.getId());
+        historique.setStatut("LIÉ_OFFRE");
+        historique.setDateChangement(LocalDateTime.now());
+        historique.setRecruteur("SYSTEM");
+        historiqueRepository.save(historique);
+
+        // Notification
+        NotificationMessage msg = new NotificationMessage(
+                saved.getCandidatId(), "LIÉ_OFFRE", LocalDateTime.now()
+        );
+        amqpTemplate.convertAndSend("notificationExchange", "candidat.statut", msg);
+
+        return ProcessusMapper.toDTO(saved);
+    }
+
+    @Override
+    public List<ProcessusDTO> getCandidaturesSpontanees() {
+        return processusRepository.findAll().stream()
+                .filter(p -> p.getTypeCandidature() == TypeCandidature.SPONTANEE)
+                .map(ProcessusMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ProcessusDTO> findByTypeCandidature(TypeCandidature typeCandidature) {
+        return processusRepository.findByTypeCandidature(typeCandidature)
+                .stream()
+                .map(ProcessusMapper::toDTO)  // ✅ appel statique
+                .collect(Collectors.toList());
+    }
+
+
+
+
 }

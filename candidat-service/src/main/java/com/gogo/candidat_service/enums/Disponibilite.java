@@ -1,4 +1,4 @@
-package com.gogo.candidat_service.model;
+package com.gogo.candidat_service.enums;
 
 
 public enum Disponibilite {

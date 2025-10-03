@@ -13,7 +13,5 @@ public class RecruteurDTO {
     private String telephone;
     private String poste;
     private Niveau niveau;
-
-
 }
 

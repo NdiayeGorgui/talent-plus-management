@@ -1,10 +1,8 @@
 package com.gogo.recrutement_service.controller;
 
-import com.gogo.recrutement_service.dto.PostulerDTO;
-import com.gogo.recrutement_service.dto.ProcessusDTO;
-import com.gogo.recrutement_service.dto.HistoriqueDTO;
-import com.gogo.recrutement_service.dto.StatutCountDTO;
+import com.gogo.recrutement_service.dto.*;
 import com.gogo.recrutement_service.enums.StatutProcessus;
+import com.gogo.recrutement_service.enums.TypeCandidature;
 import com.gogo.recrutement_service.exception.CandidatNotFoundException;
 import com.gogo.recrutement_service.exception.NotificationException;
 import com.gogo.recrutement_service.exception.OffreNotFoundException;
@@ -75,7 +73,7 @@ public class RecrutementController {
                 .collect(Collectors.groupingBy(p -> p.getDateMaj().format(fmt), Collectors.counting()));
     }
 
-    // 3. Stat candidatures par statut
+    // 8. Stat candidatures par statut
     @GetMapping("/candidatures-par-statut")
     public List<StatutCountDTO> getCandidaturesParStatut() {
         return recrutementService.getAllProcessus().stream()
@@ -87,7 +85,32 @@ public class RecrutementController {
                 .map(e -> new StatutCountDTO(e.getKey().name(), e.getValue()))
                 .collect(Collectors.toList());
     }
+    // 9. Candidatures spontanée
+    @PostMapping("/spontanee")
+    public ResponseEntity<ProcessusDTO> candidatureSpontanee(@RequestBody CandidatureSpontaneeDTO dto)
+            throws CandidatNotFoundException, NotificationException {
+        return ResponseEntity.ok(recrutementService.createProcessusSpontane(dto.getCandidatId(), dto.getMessageMotivation()));
+    }
 
+    // 10. Lier une candidature spontanée à une offre
+    @PutMapping("/{processusId}/lier-offre/{offreId}")
+    public ResponseEntity<ProcessusDTO> lierCandidatureSpontanee(
+            @PathVariable("processusId") Long processusId,
+            @PathVariable("offreId") Long offreId) throws ProcessusNotFoundException, OffreNotFoundException, NotificationException {
+        return ResponseEntity.ok(recrutementService.lierCandidatureSpontanee(processusId, offreId));
+    }
+
+    //  Lister toutes les candidatures spontanées
+    @GetMapping("/spontanees")
+    public ResponseEntity<List<ProcessusDTO>> getCandidaturesSpontanees() {
+        return ResponseEntity.ok(recrutementService.getCandidaturesSpontanees());
+    }
+
+    //  Lister les candidatures par type (SPONTANEE, OFFRE, etc.)
+    @GetMapping("/type/{type}")
+    public ResponseEntity<List<ProcessusDTO>> getByType(@PathVariable("type") TypeCandidature type) {
+        return ResponseEntity.ok(recrutementService.findByTypeCandidature(type));
+    }
 
 
 }

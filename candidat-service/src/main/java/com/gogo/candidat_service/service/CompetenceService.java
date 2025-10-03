@@ -4,8 +4,6 @@ import com.gogo.candidat_service.dto.CompetenceDTO;
 import com.gogo.candidat_service.dto.CompetenceFrequencyDTO;
 import com.gogo.candidat_service.exception.CandidatNotFoundException;
 import com.gogo.candidat_service.exception.CompetenceNotFoundException;
-import com.gogo.candidat_service.model.Competence;
-import com.gogo.candidat_service.model.Niveau;
 
 import java.util.List;
 

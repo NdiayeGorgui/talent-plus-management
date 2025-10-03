@@ -25,8 +25,6 @@ public class Candidat {
     private LocalDate dateNaissance;
     private String adresse;
 
-    @Enumerated(EnumType.STRING)
-    private Disponibilite disponibilite = Disponibilite.DISPONIBLE;
 
     // Relations
 
@@ -42,6 +40,8 @@ public class Candidat {
 
     @OneToMany(mappedBy = "candidat", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Competence> competences = new ArrayList<>();
+    @OneToOne(mappedBy = "candidat", cascade = CascadeType.ALL, orphanRemoval = true)
+    private MetadonneeRH metadonneeRH;
 
     // Getters & setters
     public Long getId() {
@@ -100,14 +100,6 @@ public class Candidat {
         this.adresse = adresse;
     }
 
-    public Disponibilite getDisponibilite() {
-        return disponibilite;
-    }
-
-    public void setDisponibilite(Disponibilite disponibilite) {
-        this.disponibilite = disponibilite;
-    }
-
     public List<CV> getCvs() {
         return cvs;
     }
@@ -138,5 +130,13 @@ public class Candidat {
 
     public void setCompetences(List<Competence> competences) {
         this.competences = competences;
+    }
+
+    public MetadonneeRH getMetadonneeRH() {
+        return metadonneeRH;
+    }
+
+    public void setMetadonneeRH(MetadonneeRH metadonneeRH) {
+        this.metadonneeRH = metadonneeRH;
     }
 }

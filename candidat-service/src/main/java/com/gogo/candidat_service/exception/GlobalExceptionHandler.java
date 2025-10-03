@@ -46,6 +46,13 @@ public class GlobalExceptionHandler {
         return  ResponseEntity.internalServerError().body(errorDetails);
     }
 
+    @ExceptionHandler(MetaDonneeRHNotFoundException.class)
+    public ResponseEntity<?> handleResourceNotFoundException(MetaDonneeRHNotFoundException exception){
+        ErrorDetails errorDetails=new ErrorDetails(new Date(),exception.getMessage(),HttpStatus.NOT_FOUND);
+        log.error("Exception: {}",exception.getMessage());
+        return  ResponseEntity.internalServerError().body(errorDetails);
+    }
+
     //manipulation  exceptions globales
 
     @ExceptionHandler(Exception.class)

@@ -1,6 +1,7 @@
 package com.gogo.candidat_service.model;
 
 
+import com.gogo.candidat_service.enums.Niveau;
 import jakarta.persistence.*;
 import lombok.Data;
 

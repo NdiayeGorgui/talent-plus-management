@@ -9,6 +9,7 @@ public class ProcessusMapper {
         dto.setId(entity.getId());
         dto.setCandidatId(entity.getCandidatId());
         dto.setOffreId(entity.getOffreId());
+        dto.setTypeCandidature(entity.getTypeCandidature());
 
         // Conversion de String -> Enum (si entity.getStatut() est un String)
         if (entity.getStatut() != null) {
@@ -24,6 +25,7 @@ public class ProcessusMapper {
         entity.setId(dto.getId());
         entity.setCandidatId(dto.getCandidatId());
         entity.setOffreId(dto.getOffreId());
+        entity.setTypeCandidature(dto.getTypeCandidature());
         entity.setStatut(dto.getStatut().name()); // ✅ OK si les deux sont du type StatutProcessus
         entity.setDateMaj(dto.getDateMaj());
         return entity;

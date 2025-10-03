@@ -2,7 +2,7 @@ package com.gogo.candidat_service.mapper;
 
 import com.gogo.candidat_service.dto.*;
 import com.gogo.candidat_service.model.Candidat;
-import com.gogo.candidat_service.model.Disponibilite;
+import com.gogo.candidat_service.enums.Disponibilite;
 
 public class CandidatMapper {
 
@@ -31,7 +31,6 @@ public class CandidatMapper {
         dto.setTelephone(c.getTelephone());
         dto.setDateNaissance(c.getDateNaissance());
         dto.setAdresse(c.getAdresse());
-        dto.setDisponibilite(c.getDisponibilite() != null ? c.getDisponibilite().name() : null);
         return dto;
     }
     public static CandidatResponseDTO toResponseDTO(Candidat candidat) {
@@ -43,7 +42,6 @@ public class CandidatMapper {
         dto.setTelephone(candidat.getTelephone());
         dto.setDateNaissance(candidat.getDateNaissance());
         dto.setAdresse(candidat.getAdresse());
-        dto.setDisponibilite(candidat.getDisponibilite().name());
 
         // ✅ CVs complets
         dto.setCvs(candidat.getCvs().stream()
@@ -92,7 +90,8 @@ public class CandidatMapper {
                     c.setNiveau(comp.getNiveau()); // si enum => comp.getNiveau().name()
                     return c;
                 }).toList());
-
+        // ✅ Métadonnées RH
+        dto.setMetadonneeRH(MetadonneeRHMapper.toDTO(candidat.getMetadonneeRH()));
         return dto;
     }
 
