@@ -10,6 +10,6 @@ import java.util.List;
 public interface OffreRepository extends JpaRepository<Offre, Long> {
     List<Offre> findByActiveTrue();
     List<Offre> findByRecruteurId(Long recruteurId);
-    List<Offre> findByActiveTrueAndDateFinPublicationBefore(LocalDateTime date);
+    List<Offre> findByActiveTrueAndDateFinAffichageBefore(LocalDateTime date);
 }
 

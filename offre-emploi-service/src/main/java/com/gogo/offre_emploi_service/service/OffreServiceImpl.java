@@ -125,7 +125,7 @@ public class OffreServiceImpl implements OffreService {
      */
     @Scheduled(cron = "0 0 0 * * ?")
     public void closeExpiredOffres() {
-        List<Offre> expiredOffres = offreRepository.findByActiveTrueAndDateFinPublicationBefore(LocalDateTime.now());
+        List<Offre> expiredOffres = offreRepository.findByActiveTrueAndDateFinAffichageBefore(LocalDateTime.now());
         expiredOffres.forEach(o -> o.setActive(false));
         offreRepository.saveAll(expiredOffres);
 
