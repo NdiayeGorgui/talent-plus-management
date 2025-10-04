@@ -1,6 +1,7 @@
 package com.gogo.candidat_service.service;
 
 import com.gogo.candidat_service.dto.MetadonneeRHDTO;
+import com.gogo.candidat_service.enums.Source;
 import com.gogo.candidat_service.exception.CandidatNotFoundException;
 import com.gogo.candidat_service.exception.MetaDonneeRHNotFoundException;
 import com.gogo.candidat_service.mapper.MetadonneeRHMapper;
@@ -67,7 +68,7 @@ public class MetaDonneeRHServiceImpl implements MetaDonneeRHService {
             ));
         }
         existing.setPretentionsSalariales(dto.getPretentionsSalariales());
-        existing.setSource(dto.getSource());
+        existing.setSource(Source.valueOf(dto.getSource()));
 
         MetadonneeRH saved = repository.save(existing);
         return MetadonneeRHMapper.toDTO(saved);
