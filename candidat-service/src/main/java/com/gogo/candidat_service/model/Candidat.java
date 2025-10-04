@@ -2,6 +2,7 @@ package com.gogo.candidat_service.model;
 
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.gogo.candidat_service.enums.NiveauEtude;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -26,6 +27,8 @@ public class Candidat {
     private String telephone;
     private LocalDate dateNaissance;
     private String adresse;
+    @Enumerated(EnumType.STRING)
+    private NiveauEtude niveauEtude;
 
 
     // Relations
@@ -42,6 +45,10 @@ public class Candidat {
 
     @OneToMany(mappedBy = "candidat", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Competence> competences = new ArrayList<>();
+
+    @OneToMany(mappedBy = "candidat", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CompetenceLinguistique> competencesLinguistiques = new ArrayList<>();
+
     @OneToOne(mappedBy = "candidat", cascade = CascadeType.ALL, orphanRemoval = true)
     private MetadonneeRH metadonneeRH;
 

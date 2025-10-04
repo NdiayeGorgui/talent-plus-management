@@ -14,6 +14,7 @@ public class OffreMapper {
         dto.setTitre(offre.getTitre());
         dto.setDescription(offre.getDescription());
         dto.setDatePublication(offre.getDatePublication());
+        dto.setDateFinAffichage(offre.getDateFinAffichage());
         dto.setCategorie(offre.getCategorie());
         dto.setVille(offre.getVille());
         dto.setPays(offre.getPays());
@@ -28,6 +29,7 @@ public class OffreMapper {
         offre.setTitre(dto.getTitre());
         offre.setDescription(dto.getDescription());
         offre.setDatePublication(dto.getDatePublication() != null ? dto.getDatePublication() : LocalDateTime.now());
+        offre.setDateFinAffichage(dto.getDateFinAffichage());
         offre.setCategorie(dto.getCategorie());
         offre.setVille(dto.getVille());
         offre.setPays(dto.getPays());

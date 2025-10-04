@@ -2,6 +2,7 @@ package com.gogo.candidat_service.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.gogo.candidat_service.enums.Disponibilite;
+import com.gogo.candidat_service.enums.Source;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -22,7 +23,9 @@ public class MetadonneeRH {
     private Disponibilite disponibilite;  // IMMÉDIATE, 1 MOIS, 3 MOIS...
 
     private Double pretentionsSalariales; // optionnel
-    private String source;  //(site carrière, LinkedIn, recommandation, candidature directe, etc.)
+
+    @Enumerated(EnumType.STRING)
+    private Source source;
 
     // Relation avec candidat
     @JsonIgnore

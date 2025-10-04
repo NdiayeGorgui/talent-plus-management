@@ -25,6 +25,13 @@ public class GlobalExceptionHandler {
         log.error("Exception: {}",exception.getMessage());
         return  ResponseEntity.internalServerError().body(errorDetails);
     }
+
+    @ExceptionHandler(CompetenceLinguistiqueNotFoundException.class)
+    public ResponseEntity<?> handleResourceNotFoundException(CompetenceLinguistiqueNotFoundException exception){
+        ErrorDetails errorDetails=new ErrorDetails(new Date(),exception.getMessage(),HttpStatus.NOT_FOUND);
+        log.error("Exception: {}",exception.getMessage());
+        return  ResponseEntity.internalServerError().body(errorDetails);
+    }
     @ExceptionHandler(ExperienceNotFoundException.class)
     public ResponseEntity<?> handleResourceNotFoundException(ExperienceNotFoundException exception){
         ErrorDetails errorDetails=new ErrorDetails(new Date(),exception.getMessage(),HttpStatus.NOT_FOUND);

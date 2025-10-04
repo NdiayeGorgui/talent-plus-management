@@ -15,11 +15,13 @@ public class CandidatResponseDTO {
     private String telephone;
     private LocalDate dateNaissance;
     private String adresse;
+    private String niveauEtude;
 
     private List<CvDTO> cvs;
     private List<LettreDTO> lettres;
     private List<ExperienceDTO> experiences;
     private List<CompetenceDTO> competences;
+    private List<CompetenceLinguistiqueDTO> competencesLinguistiques;
     private MetadonneeRHDTO metadonneeRH;
 }
 

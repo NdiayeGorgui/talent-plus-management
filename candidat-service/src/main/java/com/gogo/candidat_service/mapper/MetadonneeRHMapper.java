@@ -2,6 +2,7 @@ package com.gogo.candidat_service.mapper;
 
 import com.gogo.candidat_service.dto.MetadonneeRHDTO;
 import com.gogo.candidat_service.enums.Disponibilite;
+import com.gogo.candidat_service.enums.Source;
 import com.gogo.candidat_service.model.MetadonneeRH;
 
 public class MetadonneeRHMapper {
@@ -15,7 +16,7 @@ public class MetadonneeRHMapper {
         dto.setLocalisation(entity.getLocalisation());
         dto.setDisponibilite(entity.getDisponibilite() != null ? entity.getDisponibilite().name() : null);
         dto.setPretentionsSalariales(entity.getPretentionsSalariales());
-        dto.setSource(entity.getSource());
+        dto.setSource(String.valueOf(entity.getSource()));
         return dto;
     }
 
@@ -32,7 +33,7 @@ public class MetadonneeRHMapper {
             ));
         }
         entity.setPretentionsSalariales(dto.getPretentionsSalariales());
-        entity.setSource(dto.getSource());
+        entity.setSource(Source.valueOf(dto.getSource()));
         return entity;
     }
 }

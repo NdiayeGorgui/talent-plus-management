@@ -21,6 +21,7 @@ public class Offre {
     private String description;
 
     private LocalDateTime datePublication = LocalDateTime.now();
+    private LocalDateTime dateFinAffichage;
     private String categorie;
     private String ville;
     private String pays;

@@ -1,10 +1,10 @@
 
 
 netstat -ano | findstr :5432
-tasklist | findstr 22724
-tasklist | findstr 8764
+tasklist | findstr 26760
+tasklist | findstr 7504
 Cela va te montrer les noms des processus (ex: postgres.exe).
-taskkill /PID 8764 /F
+taskkill /PID 7504 /F
 
 
 

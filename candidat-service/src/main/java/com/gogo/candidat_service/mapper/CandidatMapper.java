@@ -2,10 +2,12 @@ package com.gogo.candidat_service.mapper;
 
 import com.gogo.candidat_service.dto.*;
 import com.gogo.candidat_service.model.Candidat;
-import com.gogo.candidat_service.enums.Disponibilite;
+
+import java.util.stream.Collectors;
 
 public class CandidatMapper {
 
+    // 🔹 Conversion depuis la requête "postuler"
     public static Candidat fromRequest(PostulerRequest request) {
         Candidat candidat = new Candidat();
         candidat.setNom(request.getNom());
@@ -17,6 +19,7 @@ public class CandidatMapper {
         return candidat;
     }
 
+    // 🔹 Conversion entité -> CandidatDTO (données simples)
     public static CandidatDTO toDTO(Candidat c) {
         CandidatDTO dto = new CandidatDTO();
         dto.setId(c.getId());
@@ -26,8 +29,11 @@ public class CandidatMapper {
         dto.setTelephone(c.getTelephone());
         dto.setDateNaissance(c.getDateNaissance());
         dto.setAdresse(c.getAdresse());
+        dto.setNiveauEtude(c.getNiveauEtude() != null ? c.getNiveauEtude().name() : null);
         return dto;
     }
+
+    // 🔹 Conversion complète pour affichage détaillé
     public static CandidatResponseDTO toResponseDTO(Candidat candidat) {
         CandidatResponseDTO dto = new CandidatResponseDTO();
         dto.setId(candidat.getId());
@@ -37,57 +43,44 @@ public class CandidatMapper {
         dto.setTelephone(candidat.getTelephone());
         dto.setDateNaissance(candidat.getDateNaissance());
         dto.setAdresse(candidat.getAdresse());
+        dto.setNiveauEtude(candidat.getNiveauEtude() != null ? candidat.getNiveauEtude().name() : null);
 
-        // ✅ CVs complets
-        dto.setCvs(candidat.getCvs().stream()
-                .map(cv -> {
-                    CvDTO c = new CvDTO();
-                    c.setId(cv.getId());
-                    c.setTitre(cv.getTitre());
-                    c.setFichierUrl(cv.getFichierUrl());
-                    c.setVersion(cv.getVersion());
-                    c.setDateDepot(cv.getDateDepot());
-                    return c;
-                }).toList());
+        // ✅ Mapper les sous-collections en appelant les mappers spécialisés
+        dto.setCvs(
+                candidat.getCvs().stream()
+                        .map(CvMapper::toDTO)
+                        .collect(Collectors.toList())
+        );
 
-        // ✅ Lettres complètes
-        dto.setLettres(candidat.getLettres().stream()
-                .map(lettre -> {
-                    LettreDTO l = new LettreDTO();
-                    l.setId(lettre.getId());
-                    l.setTitre(lettre.getTitre());
-                    l.setContenu(lettre.getContenu());
-                    l.setFichierUrl(lettre.getFichierUrl());
-                    l.setVersion(lettre.getVersion());
-                    l.setDateDepot(lettre.getDateDepot());
-                    return l;
-                }).toList());
+        dto.setLettres(
+                candidat.getLettres().stream()
+                        .map(LettreMapper::toDTO)
+                        .collect(Collectors.toList())
+        );
 
-        // ✅ Expériences complètes
-        dto.setExperiences(candidat.getExperiences().stream()
-                .map(exp -> {
-                    ExperienceDTO e = new ExperienceDTO();
-                    e.setId(exp.getId());
-                    e.setPoste(exp.getPoste());
-                    e.setEntreprise(exp.getEntreprise());
-                    e.setDateDebut(exp.getDateDebut());
-                    e.setDateFin(exp.getDateFin());
-                    e.setDescription(exp.getDescription());
-                    return e;
-                }).toList());
+        dto.setExperiences(
+                candidat.getExperiences().stream()
+                        .map(ExperienceMapper::toDTO)
+                        .collect(Collectors.toList())
+        );
 
-        // ✅ Compétences complètes
-        dto.setCompetences(candidat.getCompetences().stream()
-                .map(comp -> {
-                    CompetenceDTO c = new CompetenceDTO();
-                    c.setId(comp.getId());
-                    c.setLibelle(comp.getLibelle());
-                    c.setNiveau(comp.getNiveau()); // si enum => comp.getNiveau().name()
-                    return c;
-                }).toList());
+        dto.setCompetences(
+                candidat.getCompetences().stream()
+                        .map(CompetenceMapper::toDTO)
+                        .collect(Collectors.toList())
+        );
+
+        dto.setCompetencesLinguistiques(
+                candidat.getCompetencesLinguistiques().stream()
+                        .map(CompetenceLinguistiqueMapper::toDTO)
+                        .collect(Collectors.toList())
+        );
+
         // ✅ Métadonnées RH
-        dto.setMetadonneeRH(MetadonneeRHMapper.toDTO(candidat.getMetadonneeRH()));
+        dto.setMetadonneeRH(
+                MetadonneeRHMapper.toDTO(candidat.getMetadonneeRH())
+        );
+
         return dto;
     }
-
 }

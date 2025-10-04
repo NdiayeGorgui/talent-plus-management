@@ -35,6 +35,7 @@ public class CandidatServiceImpl implements CandidatService {
                     existing.setTelephone(candidat.getTelephone());
                     existing.setAdresse(candidat.getAdresse());
                     existing.setDateNaissance(candidat.getDateNaissance());
+                    existing.setNiveauEtude(candidat.getNiveauEtude());
                     Candidat updated = candidatRepository.save(existing);
                     return CandidatMapper.toDTO(updated);
                 })

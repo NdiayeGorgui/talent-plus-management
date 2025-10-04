@@ -11,6 +11,7 @@ public class OffreDTO {
     private String titre;
     private String description;
     private LocalDateTime datePublication;
+    private LocalDateTime dateFinAffichage;
     private String categorie;
     private String ville;
     private String pays;

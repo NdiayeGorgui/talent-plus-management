@@ -5,10 +5,13 @@ import com.gogo.offre_emploi_service.exception.OffreNotFoundException;
 import com.gogo.offre_emploi_service.mapper.OffreMapper;
 import com.gogo.offre_emploi_service.model.Offre;
 import com.gogo.offre_emploi_service.repository.OffreRepository;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,6 +48,7 @@ public class OffreServiceImpl implements OffreService {
         // Mettre à jour les champs principaux
         offre.setTitre(dto.getTitre());
         offre.setDescription(dto.getDescription());
+        offre.setDateFinAffichage(offre.getDateFinAffichage());
         offre.setCategorie(dto.getCategorie());
         offre.setVille(dto.getVille());
         offre.setPays(dto.getPays());
@@ -113,5 +117,20 @@ public class OffreServiceImpl implements OffreService {
                 .onStatus(status -> status.value() == 404, r -> Mono.error(new RuntimeException("Recruteur introuvable")))
                 .bodyToMono(Void.class)
                 .block(); // blocage acceptable si synch service simple; sinon faire tout réactif
+    }
+
+    /**
+     * Tâche planifiée qui vérifie chaque jour à minuit
+     * les offres expirées et les clôture automatiquement.
+     */
+    @Scheduled(cron = "0 0 0 * * ?")
+    public void closeExpiredOffres() {
+        List<Offre> expiredOffres = offreRepository.findByActiveTrueAndDateFinPublicationBefore(LocalDateTime.now());
+        expiredOffres.forEach(o -> o.setActive(false));
+        offreRepository.saveAll(expiredOffres);
+
+        if (!expiredOffres.isEmpty()) {
+            System.out.println("✅ " + expiredOffres.size() + " offres clôturées automatiquement.");
+        }
     }
 }
