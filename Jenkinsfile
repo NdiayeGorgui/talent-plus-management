@@ -41,6 +41,7 @@ pipeline {
                             "api-gateway-service"     : "gateway-service",
                             "candidat-service"        : "candidat-service",
                             "config-service"          : "config-server",
+                            "employeur-service"       : "employeur-service",
                             "eureka-service"          : "eureka-service",
                             "notification-service"    : "notification-talent-service",
                             "offre-emploi-service"    : "offre-service",
