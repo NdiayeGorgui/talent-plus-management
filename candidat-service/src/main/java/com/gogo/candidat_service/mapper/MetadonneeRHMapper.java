@@ -11,6 +11,7 @@ public class MetadonneeRHMapper {
         if (entity == null) return null;
 
         MetadonneeRHDTO dto = new MetadonneeRHDTO();
+        dto.setId(entity.getId());
         dto.setDomaineRecherche(entity.getDomaineRecherche());
         dto.setTypeContrat(entity.getTypeContrat());
         dto.setLocalisation(entity.getLocalisation());
@@ -24,6 +25,7 @@ public class MetadonneeRHMapper {
         if (dto == null) return null;
 
         MetadonneeRH entity = new MetadonneeRH();
+        entity.setId(dto.getId());
         entity.setDomaineRecherche(dto.getDomaineRecherche());
         entity.setTypeContrat(dto.getTypeContrat());
         entity.setLocalisation(dto.getLocalisation());

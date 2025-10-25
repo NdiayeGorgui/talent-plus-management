@@ -13,6 +13,7 @@ spring:
               - POST
               - DELETE
               - PUT
+              - PATCH
               - OPTIONS
             allowCredentials: true
             exposedHeaders:       # 👈 permet à Angular de lire ces headers
@@ -30,5 +31,4 @@ spring:
           predicates:
             - Path=/candidat-service/api/v1/cvs/download/**
           filters:
-            # 👇 Ajoute les headers exposés dans la réponse
             - AddResponseHeader=Access-Control-Expose-Headers, Content-Disposition, Content-Type

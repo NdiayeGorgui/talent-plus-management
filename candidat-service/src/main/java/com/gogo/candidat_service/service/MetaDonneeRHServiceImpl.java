@@ -1,19 +1,16 @@
 package com.gogo.candidat_service.service;
 
 import com.gogo.candidat_service.dto.MetadonneeRHDTO;
+import com.gogo.candidat_service.enums.Disponibilite;
 import com.gogo.candidat_service.enums.Source;
 import com.gogo.candidat_service.exception.CandidatNotFoundException;
 import com.gogo.candidat_service.exception.MetaDonneeRHNotFoundException;
 import com.gogo.candidat_service.mapper.MetadonneeRHMapper;
-import com.gogo.candidat_service.enums.Disponibilite;
 import com.gogo.candidat_service.model.Candidat;
 import com.gogo.candidat_service.model.MetadonneeRH;
 import com.gogo.candidat_service.repository.CandidatRepository;
 import com.gogo.candidat_service.repository.MetaDonneeRHRepository;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class MetaDonneeRHServiceImpl implements MetaDonneeRHService {
@@ -63,7 +60,7 @@ public class MetaDonneeRHServiceImpl implements MetaDonneeRHService {
         existing.setLocalisation(dto.getLocalisation());
         if (dto.getDisponibilite() != null) {
             existing.setDisponibilite(Enum.valueOf(
-                    com.gogo.candidat_service.enums.Disponibilite.class,
+                    Disponibilite.class,
                     dto.getDisponibilite()
             ));
         }

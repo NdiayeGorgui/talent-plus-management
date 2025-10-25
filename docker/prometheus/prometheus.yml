@@ -35,6 +35,14 @@ scrape_configs:
         labels:
           application: 'Recruteur Service Application'
 
+  - job_name: 'employeur-service'
+    metrics_path: '/actuator/prometheus'
+    scrape_interval: 5s
+    static_configs:
+      - targets: [ 'employeur-service:8088' ]
+        labels:
+          application: 'Employeur Service Application'
+
   - job_name: 'statistic_service'
     metrics_path: '/actuator/prometheus'
     scrape_interval: 5s

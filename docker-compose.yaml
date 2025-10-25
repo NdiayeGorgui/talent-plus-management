@@ -138,7 +138,7 @@ services:
     networks:
       - my_talent_network
 
-  # Candidat Service (utilise Kafka et se connecte à la BD)
+  # Candidat Service
   candidat-service:
     image: gorgui/candidat-service:latest
     container_name: candidat-service
@@ -171,7 +171,7 @@ services:
       - my_talent_network
 
 
-  # Offre Service (utilise Kafka et se connecte à la BD)
+  # Offre Service
   offre-service:
     image: gorgui/offre-service:latest
     container_name: offre-service
@@ -192,7 +192,7 @@ services:
     networks:
       - my_talent_network
 
-  # Recrutement Service (utilise Kafka et se connecte à la BD)
+  # Recrutement Service
   recrutement-service:
     image: gorgui/recrutement-service:latest
     container_name: recrutement-service
@@ -217,7 +217,7 @@ services:
     networks:
       - my_talent_network
 
-    # Recruteur Service (utilise Kafka et se connecte à la BD)
+    # Recruteur Service
   recruteur-service:
     image: gorgui/recruteur-service:latest
     container_name: recruteur-service
@@ -242,7 +242,32 @@ services:
     networks:
       - my_talent_network
 
-  # Statistic Service (utilise Kafka et se connecte à la BD)
+  # Employeur Service
+  employeur-service:
+    image: gorgui/employeur-service:latest
+    container_name: employeur-service
+    ports:
+      - "8088:8088"
+    expose:
+      - "8088"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/employeur_prod_db
+      - SPRING_DATASOURCE_USERNAME=user
+      - SPRING_DATASOURCE_PASSWORD=userpassword
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_RABBITMQ_PORT=5672
+      - SPRING_RABBITMQ_USERNAME=guest
+      - SPRING_RABBITMQ_PASSWORD=guest
+      - eureka.client.service-url.defaultZone=http://eureka-service:8761/eureka/
+      - SPRING_CONFIG_IMPORT=configserver:http://config-server:9191/
+    depends_on:
+      candidat-service:
+        condition: service_healthy
+    networks:
+      - my_talent_network
+
+  # Statistic Service
   statistic-service:
     image: gorgui/statistic-service:latest
     container_name: statistic-service
@@ -289,7 +314,7 @@ services:
     networks:
       - my_talent_network
 
-    # Notification Service (utilise Kafka)
+    # Notification Service
   notification-talent-service:
     image: gorgui/notification-talent-service:latest
     container_name: notification-talent-service

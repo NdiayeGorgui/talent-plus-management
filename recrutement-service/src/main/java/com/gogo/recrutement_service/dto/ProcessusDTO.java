@@ -14,4 +14,8 @@ public class ProcessusDTO {
     private StatutProcessus statut;
     private LocalDateTime dateMaj;
 
+    // Champs enrichis pour affichage
+
+    private String titreOffre;
+    private String categorieOffre;
 }

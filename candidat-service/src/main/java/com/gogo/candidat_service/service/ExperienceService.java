@@ -3,7 +3,6 @@ package com.gogo.candidat_service.service;
 import com.gogo.candidat_service.dto.ExperienceDTO;
 import com.gogo.candidat_service.exception.CandidatNotFoundException;
 import com.gogo.candidat_service.exception.ExperienceNotFoundException;
-import com.gogo.candidat_service.model.Experience;
 
 import java.util.List;
 

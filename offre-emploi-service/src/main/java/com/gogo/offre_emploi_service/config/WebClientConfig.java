@@ -14,10 +14,19 @@ public class WebClientConfig {
     public WebClient.Builder webClientBuilder() {
         return WebClient.builder();
     }
+
     @Bean
     public WebClient recruteurWebClient(WebClient.Builder builder) {
         return builder
                 .baseUrl("http://recruteur-service/api/v1/recruteurs")
                 .build();
     }
+
+    @Bean
+    public WebClient employeurWebClient(WebClient.Builder builder) {
+        return builder
+                .baseUrl("http://employeur-service/api/v1/employeurs")
+                .build();
+    }
+
 }

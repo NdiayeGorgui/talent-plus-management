@@ -22,5 +22,13 @@ public class WebClientConfig {
                 .build();
     }
 
+    // Pour récupérer le user
+    @Bean(name = "userWebClient")
+    public WebClient userWebClient(WebClient.Builder builder) {
+        return builder
+                .baseUrl("http://utilisateur-service/api/v1/auth")
+                .build();
+    }
+
 }
 

@@ -20,6 +20,7 @@ public class OffreMapper {
         dto.setPays(offre.getPays());
         dto.setActive(offre.isActive());
         dto.setRecruteurId(offre.getRecruteurId());
+        dto.setEmployeurId(offre.getEmployeurId());
         return dto;
     }
 
@@ -35,6 +36,7 @@ public class OffreMapper {
         offre.setPays(dto.getPays());
         offre.setActive(dto.isActive());
         offre.setRecruteurId(dto.getRecruteurId());
+        offre.setEmployeurId(dto.getEmployeurId());
         return offre;
     }
 }

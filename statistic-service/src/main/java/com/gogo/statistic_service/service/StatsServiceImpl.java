@@ -2,10 +2,10 @@ package com.gogo.statistic_service.service;
 
 import com.gogo.statistic_service.dto.CompetenceFrequencyDTO;
 import com.gogo.statistic_service.dto.MonthlyCountDTO;
+import com.gogo.statistic_service.dto.OffreCountDTO;
 import com.gogo.statistic_service.dto.StatutCountDTO;
 import com.gogo.statistic_service.exception.StatServiceException;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
-import io.github.resilience4j.retry.annotation.Retry;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,11 +26,20 @@ public class StatsServiceImpl implements StatsService {
 
     private final WebClient competenceWebClient;
     private final WebClient recrutementWebClient;
+    private final WebClient recruteurWebClient;
+    private final WebClient employeurWebClient;
+    private final WebClient offreWebClient;
 
     public StatsServiceImpl(
             @Qualifier("competenceWebClient") WebClient competenceWebClient,
+            @Qualifier("recruteurWebClient") WebClient recruteurWebClient,
+            @Qualifier("employeurWebClient") WebClient employeurWebClient,
+            @Qualifier("offreWebClient") WebClient offreWebClient,
             @Qualifier("recrutementWebClient") WebClient recrutementWebClient) {
         this.competenceWebClient = competenceWebClient;
+        this.recruteurWebClient = recruteurWebClient;
+        this.employeurWebClient = employeurWebClient;
+        this.offreWebClient = offreWebClient;
         this.recrutementWebClient = recrutementWebClient;
     }
 
@@ -100,7 +109,73 @@ public class StatsServiceImpl implements StatsService {
             throw new StatServiceException("Erreur interne du service de statistiques", e);
         }
     }
+    // 🔹 Nombre d’offres par employeur
+    @CircuitBreaker(name = "${spring.application.name}", fallbackMethod = "getDefaultNombreOffresParEmployeur")
+    @Override
+    public List<OffreCountDTO> getNombreOffresParEmployeur() {
+        try {
+            List<OffreCountDTO> rawList = offreWebClient.get()
+                    .uri("/count-by-employeur")
+                    .retrieve()
+                    .bodyToFlux(OffreCountDTO.class)
+                    .collectList()
+                    .block();
 
+            if (rawList != null) {
+                for (OffreCountDTO dto : rawList) {
+                    try {
+                        String nom = employeurWebClient.get()
+                                .uri("/" + dto.getId()) // ✅ /{id} déjà existant dans employeur-service
+                                .retrieve()
+                                .bodyToMono(String.class)
+                                .block();
+                        dto.setNom(nom);
+                    } catch (Exception e) {
+                        dto.setNom("Employeur inconnu");
+                    }
+                }
+            }
+            return rawList;
+        } catch (Exception e) {
+            log.error("Erreur lors de la récupération des stats par employeur", e);
+            throw new StatServiceException("Impossible de récupérer le nombre d’offres par employeur", e);
+        }
+    }
+
+    // 🔹 Nombre d’offres par recruteur
+    @CircuitBreaker(name = "${spring.application.name}", fallbackMethod = "getDefaultNombreOffresParRecruteur")
+    @Override
+    public List<OffreCountDTO> getNombreOffresParRecruteur() {
+        try {
+            List<OffreCountDTO> rawList = offreWebClient.get()
+                    .uri("/count-by-recruteur")
+                    .retrieve()
+                    .bodyToFlux(OffreCountDTO.class)
+                    .collectList()
+                    .block();
+
+            if (rawList != null) {
+                for (OffreCountDTO dto : rawList) {
+                    try {
+                        String nom = recruteurWebClient.get()
+                                .uri("/" + dto.getId()) // ✅ /{id} déjà existant dans recruteur-service
+                                .retrieve()
+                                .bodyToMono(String.class)
+                                .block();
+                        dto.setNom(nom);
+                    } catch (Exception e) {
+                        dto.setNom("Recruteur inconnu");
+                    }
+                }
+            }
+            return rawList;
+        } catch (Exception e) {
+            log.error("Erreur lors de la récupération des stats par recruteur", e);
+            throw new StatServiceException("Impossible de récupérer le nombre d’offres par recruteur", e);
+        }
+    }
+
+    // 🔹 Fallbacks
     public List<StatutCountDTO> getDefaultCandidaturesParStatut(Throwable throwable) {
         LOGGER.info("inside getDefaultCandidaturesParStatut");
         log.warn("Fallback activé pour getCandidaturesParStatut : {}", throwable.getMessage());
@@ -130,5 +205,20 @@ public class StatsServiceImpl implements StatsService {
         );
     }
 
+    public List<OffreCountDTO> getDefaultNombreOffresParRecruteur(Throwable throwable) {
+        log.warn("Fallback activé pour getNombreOffresParRecruteur : {}", throwable.getMessage());
+        return List.of(
+                new OffreCountDTO(1L, "Recruteur A", 5L),
+                new OffreCountDTO(2L, "Recruteur B", 3L)
+        );
+    }
+
+    public List<OffreCountDTO> getDefaultNombreOffresParEmployeur(Throwable throwable) {
+        log.warn("Fallback activé pour getNombreOffresParEmployeur : {}", throwable.getMessage());
+        return List.of(
+                new OffreCountDTO(1L, "Employeur X", 10L),
+                new OffreCountDTO(2L, "Employeur Y", 7L)
+        );
+    }
 
 }

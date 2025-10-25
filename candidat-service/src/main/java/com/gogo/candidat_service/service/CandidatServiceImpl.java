@@ -5,10 +5,13 @@ import com.gogo.candidat_service.dto.CandidatResponseDTO;
 import com.gogo.candidat_service.dto.PostulerRequest;
 import com.gogo.candidat_service.exception.CandidatNotFoundException;
 import com.gogo.candidat_service.mapper.*;
-import com.gogo.candidat_service.model.*;
+import com.gogo.candidat_service.model.Candidat;
 import com.gogo.candidat_service.repository.CandidatRepository;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CandidatServiceImpl implements CandidatService {
@@ -117,5 +120,32 @@ public class CandidatServiceImpl implements CandidatService {
         return candidatRepository.findById(id)
                 .map(CandidatMapper::toResponseDTO)
                 .orElseThrow(() -> new CandidatNotFoundException("Candidate not available with id: " + id));
+    }
+
+    @Override
+    public Optional<CandidatResponseDTO> findByEmail(String email) {
+        return candidatRepository.findByEmail(email)
+                .map(this::mapToDTO);
+    }
+
+    @Override
+    public List<CandidatDTO> findByIds(List<Long> ids) {
+        return candidatRepository.findAllById(ids).stream()
+                .map(CandidatMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+
+    private CandidatResponseDTO mapToDTO(Candidat candidat) {
+        CandidatResponseDTO dto = new CandidatResponseDTO();
+        dto.setId(candidat.getId());
+        dto.setNom(candidat.getNom());
+        dto.setPrenom(candidat.getPrenom());
+        dto.setEmail(candidat.getEmail());
+        dto.setTelephone(candidat.getTelephone());
+        dto.setAdresse(candidat.getAdresse());
+        dto.setDateNaissance(candidat.getDateNaissance());
+        dto.setNiveauEtude(String.valueOf(candidat.getNiveauEtude()));
+        return dto;
     }
 }

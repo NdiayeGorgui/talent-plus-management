@@ -1,6 +1,8 @@
 package com.gogo.candidat_service.mapper;
 
-import com.gogo.candidat_service.dto.*;
+import com.gogo.candidat_service.dto.CandidatDTO;
+import com.gogo.candidat_service.dto.CandidatResponseDTO;
+import com.gogo.candidat_service.dto.PostulerRequest;
 import com.gogo.candidat_service.model.Candidat;
 
 import java.util.stream.Collectors;
@@ -83,4 +85,18 @@ public class CandidatMapper {
 
         return dto;
     }
+
+    public static CandidatDTO fromResponseDTO(CandidatResponseDTO c) {
+        CandidatDTO dto = new CandidatDTO();
+        dto.setId(c.getId());
+        dto.setNom(c.getNom());
+        dto.setPrenom(c.getPrenom());
+        dto.setEmail(c.getEmail());
+        dto.setTelephone(c.getTelephone());
+        dto.setDateNaissance(c.getDateNaissance());
+        dto.setAdresse(c.getAdresse());
+        dto.setNiveauEtude(c.getNiveauEtude());
+        return dto;
+    }
+
 }

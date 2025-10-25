@@ -12,6 +12,7 @@
         <module>candidat-service</module>
         <module>base-domaine-service</module>
         <module>config-service</module>
+        <module>employeur-service</module>
         <module>eureka-service</module>
         <module>notification-service</module>
         <module>offre-emploi-service</module>

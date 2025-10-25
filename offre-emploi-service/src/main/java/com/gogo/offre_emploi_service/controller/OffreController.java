@@ -1,5 +1,6 @@
 package com.gogo.offre_emploi_service.controller;
 
+import com.gogo.offre_emploi_service.dto.OffreCountDTO;
 import com.gogo.offre_emploi_service.dto.OffreDTO;
 import com.gogo.offre_emploi_service.exception.OffreNotFoundException;
 import com.gogo.offre_emploi_service.service.OffreService;
@@ -63,5 +64,33 @@ public class OffreController {
     public ResponseEntity<List<OffreDTO>> getOffresByRecruteur(@PathVariable("recruteurId") Long recruteurId) {
         return ResponseEntity.ok(offreService.getOffresByRecruteur(recruteurId));
     }
+
+    @GetMapping("/employeurs/{employeurId}")
+    public ResponseEntity<List<OffreDTO>> getOffresByEmployeur(@PathVariable("employeurId") Long employeurId) {
+        return ResponseEntity.ok(offreService.getOffresByEmployeur(employeurId));
+    }
+
+    @GetMapping("/recruteur/{id}/ids")
+    public List<Long> getOffreIdsByRecruteur(@PathVariable("id") Long id) {
+        return offreService.findOffreIdsByRecruteurId(id);
+    }
+
+    @GetMapping("/employeur/{id}/ids")
+    public List<Long> getOffreIdsByEmployeur(@PathVariable("id") Long id) {
+        return offreService.findOffreIdsByEmployeurId(id);
+    }
+
+    @GetMapping("/count-by-recruteur")
+    public ResponseEntity<List<OffreCountDTO>> getCountByRecruteur() {
+        return ResponseEntity.ok(offreService.countOffresByRecruteur());
+    }
+
+    @GetMapping("/count-by-employeur")
+    public ResponseEntity<List<OffreCountDTO>> getCountByEmployeur() {
+        return ResponseEntity.ok(offreService.countOffresByEmployeur());
+    }
+
+
+
 }
 

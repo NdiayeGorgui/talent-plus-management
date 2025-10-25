@@ -14,9 +14,28 @@ public class GlobalExceptionHandler {
     //manipulation exceptions spécifiques
     @ExceptionHandler(RecruteurNotFoundException.class)
     public ResponseEntity<?> handleResourceNotFoundException(RecruteurNotFoundException exception){
-        ErrorDetails errorDetails=new ErrorDetails(new Date(),exception.getMessage(),HttpStatus.NOT_FOUND);
-        log.error("Exception: {}",exception.getMessage());
-        return  ResponseEntity.internalServerError().body(errorDetails);
+        ErrorDetails errorDetails = new ErrorDetails(
+                new Date(),
+                exception.getMessage(),
+                HttpStatus.NOT_FOUND
+        );
+        log.error("Exception: {}", exception.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND) // 404
+                .body(errorDetails);
+    }
+
+    @ExceptionHandler(AdminNotFoundException.class)
+    public ResponseEntity<?> handleResourceNotFoundException(AdminNotFoundException exception){
+        ErrorDetails errorDetails = new ErrorDetails(
+                new Date(),
+                exception.getMessage(),
+                HttpStatus.NOT_FOUND
+        );
+        log.error("Exception: {}", exception.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND) // 404
+                .body(errorDetails);
     }
 
     //manipulation  exceptions globales

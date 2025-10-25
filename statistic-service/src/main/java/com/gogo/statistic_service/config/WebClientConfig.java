@@ -37,5 +37,27 @@ public class WebClientConfig {
                 .baseUrl("http://recrutement-service/api/v1/recrutements")
                 .build();
     }
+
+    @Bean(name = "recruteurWebClient")
+    public WebClient recruteurWebClient(WebClient.Builder builder) {
+        return builder
+                .baseUrl("http://recruteur-service/api/v1/recruteurs")
+                .build();
+    }
+
+    @Bean(name = "employeurWebClient")
+    public WebClient employeurWebClient(WebClient.Builder builder) {
+        return builder
+                .baseUrl("http://employeur-service/api/v1/employeurs")
+                .build();
+    }
+
+    @Bean(name = "offreWebClient")
+    public WebClient offreWebClient(WebClient.Builder builder) {
+        return builder
+                .baseUrl("http://offre-service/api/v1/offres")
+                .build();
+    }
+
 }
 

@@ -3,10 +3,11 @@ package com.gogo.candidat_service.controller;
 import com.gogo.candidat_service.dto.CandidatDTO;
 import com.gogo.candidat_service.dto.CandidatResponseDTO;
 import com.gogo.candidat_service.exception.CandidatNotFoundException;
-import com.gogo.candidat_service.model.*;
-import com.gogo.candidat_service.service.*;
+import com.gogo.candidat_service.model.Candidat;
+import com.gogo.candidat_service.service.CandidatService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
@@ -60,4 +61,11 @@ public class CandidatController {
         CandidatResponseDTO candidat = candidatService.findById(id);
         return ResponseEntity.ok(candidat.getEmail());
     }
+
+    @PostMapping("/ids")
+    public ResponseEntity<List<CandidatDTO>> getCandidatsByIds(@RequestBody List<Long> ids) {
+        List<CandidatDTO> candidats = candidatService.findByIds(ids);
+        return ResponseEntity.ok(candidats);
+    }
+
 }

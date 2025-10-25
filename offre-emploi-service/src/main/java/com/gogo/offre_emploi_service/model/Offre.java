@@ -2,6 +2,7 @@ package com.gogo.offre_emploi_service.model;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -17,9 +18,9 @@ public class Offre {
 
     private String titre;
 
-    @Column(length = 2000)
+    @Size(max = 10000)
+    @Column(columnDefinition = "TEXT")
     private String description;
-
     private LocalDateTime datePublication = LocalDateTime.now();
     private LocalDateTime dateFinAffichage;
     private String categorie;
@@ -28,6 +29,7 @@ public class Offre {
     private boolean active = true; // pour clôturer l'offre
     // association via id seulement (microservice Recruteur séparé)
     private Long recruteurId;
+    private Long employeurId;
 
 }
 

@@ -2,29 +2,35 @@ package com.gogo.recrutement_service.service;
 
 import com.gogo.base_domaine_service.dto.NotificationMessage;
 import com.gogo.recrutement_service.dto.HistoriqueDTO;
+import com.gogo.recrutement_service.dto.OffreDTO;
 import com.gogo.recrutement_service.dto.ProcessusDTO;
 import com.gogo.recrutement_service.enums.StatutProcessus;
 import com.gogo.recrutement_service.enums.TypeCandidature;
 import com.gogo.recrutement_service.exception.CandidatNotFoundException;
+import com.gogo.recrutement_service.exception.NotificationException;
 import com.gogo.recrutement_service.exception.OffreNotFoundException;
 import com.gogo.recrutement_service.exception.ProcessusNotFoundException;
-import com.gogo.recrutement_service.exception.NotificationException;
 import com.gogo.recrutement_service.mapper.HistoriqueMapper;
 import com.gogo.recrutement_service.mapper.ProcessusMapper;
 import com.gogo.recrutement_service.model.Historique;
 import com.gogo.recrutement_service.model.Processus;
 import com.gogo.recrutement_service.repository.HistoriqueRepository;
 import com.gogo.recrutement_service.repository.ProcessusRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Slf4j
 @Service
@@ -130,7 +136,7 @@ public class RecrutementServiceImpl implements RecrutementService {
         historique.setProcessusId(saved.getId());
         historique.setStatut(nouveauStatut);
         historique.setDateChangement(LocalDateTime.now());
-        historique.setRecruteur("SYSTEM");
+        historique.setRecruteur(getUsernameFromHeader().toUpperCase());
         historiqueRepository.save(historique);
 
         // Notification RabbitMQ
@@ -154,19 +160,47 @@ public class RecrutementServiceImpl implements RecrutementService {
                 .collect(Collectors.toList());
     }
 
-    @Override
+  /*  @Override
     public List<ProcessusDTO> getByCandidat(Long candidatId) {
         return processusRepository.findByCandidatId(candidatId).stream()
                 .map(ProcessusMapper::toDTO)
                 .collect(Collectors.toList());
+    }*/
+
+    @Override
+    public List<ProcessusDTO> getByCandidat(Long candidatId) {
+        return processusRepository.findByCandidatId(candidatId).stream()
+                .map(this::enrichirAvecOffre)
+                .collect(Collectors.toList());
     }
+
 
     @Override
     public List<ProcessusDTO> getByOffre(Long offreId) {
-        return processusRepository.findByOffreId(offreId).stream()
+        log.info("Recherche des processus pour l'offre avec id {}", offreId);
+
+        // Récupérer les processus liés à l'offre
+        List<Processus> processusList = processusRepository.findByOffreId(offreId);
+
+        // Récupérer les processus où offreId est null (candidatures spontanées)
+        List<Processus> spontanesList = processusRepository.findByOffreIdIsNull();
+
+        // Fusionner les listes
+        List<Processus> combinedList = new ArrayList<>();
+        combinedList.addAll(processusList);
+        combinedList.addAll(spontanesList);
+
+        log.info("Nombre total de processus trouvés (offre + spontanes): {}", combinedList.size());
+
+        List<ProcessusDTO> dtoList = combinedList.stream()
                 .map(ProcessusMapper::toDTO)
                 .collect(Collectors.toList());
+        log.debug("ProcessusDTOs combinés: {}", dtoList);
+
+        return dtoList;
     }
+
+
 
     @Override
     public List<HistoriqueDTO> getHistorique(Long processusId) {
@@ -239,7 +273,7 @@ public class RecrutementServiceImpl implements RecrutementService {
         historique.setProcessusId(saved.getId());
         historique.setStatut("LIÉ_OFFRE");
         historique.setDateChangement(LocalDateTime.now());
-        historique.setRecruteur("SYSTEM");
+        historique.setRecruteur(getUsernameFromHeader().toUpperCase());
         historiqueRepository.save(historique);
 
         // Notification
@@ -267,6 +301,96 @@ public class RecrutementServiceImpl implements RecrutementService {
                 .collect(Collectors.toList());
     }
 
+//méthode pour obtenir les processus filtrés par recruteur
+    @Override
+    public List<ProcessusDTO> getByRecruteur(Long recruteurId) {
+        // 1. Obtenir les offres de ce recruteur via appel au service offre
+        List<Long> offreIds = offreWebClient.get()
+                .uri("/recruteur/" + recruteurId + "/ids")
+                .retrieve()
+                .bodyToFlux(Long.class)
+                .collectList()
+                .block();
+
+        if (offreIds == null || offreIds.isEmpty()) {
+            return List.of(); // aucune offre => aucun processus
+        }
+
+        // 2. Récupérer les processus dont l'offre est parmi ces ids
+        return processusRepository.findByOffreIdIn(offreIds)
+                .stream().distinct()
+                .map(ProcessusMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Long> getCandidatIdsByRecruteur(Long recruteurId) {
+        // Étape 1 : récupérer les IDs des offres du recruteur
+        List<Long> offreIds = offreWebClient.get()
+                .uri("/recruteur/" + recruteurId + "/ids")
+                .retrieve()
+                .bodyToFlux(Long.class)
+                .collectList()
+                .block();
+
+        // Étape 2 : récupérer les IDs des candidats liés aux offres du recruteur
+        List<Long> candidatsParOffre = (offreIds == null || offreIds.isEmpty())
+                ? List.of()
+                : processusRepository.findByOffreIdIn(offreIds).stream()
+                .map(Processus::getCandidatId)
+                .toList();
+
+        // Étape 3 : récupérer les candidats de candidatures spontanées (offreId == null)
+        List<Long> candidatsSpontanes = processusRepository.findByOffreIdIsNull().stream()
+                .map(Processus::getCandidatId)
+                .toList();
+
+        // Étape 4 : fusionner + supprimer les doublons
+        return Stream.concat(candidatsParOffre.stream(), candidatsSpontanes.stream())
+                .distinct()
+                .toList();
+    }
+
+    @Override
+    public boolean hasAlreadyApplied(Long candidatId, Long offreId) {
+        log.info("🔍 Vérification si le candidat {} a déjà postulé à l'offre {}", candidatId, offreId);
+        return processusRepository.existsByCandidatIdAndOffreId(candidatId, offreId);
+    }
+
+
+
+    private String getUsernameFromHeader() {
+        ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        if (attr != null) {
+            HttpServletRequest request = attr.getRequest();
+            String username = request.getHeader("X-User-Name");
+            return (username != null && !username.isBlank()) ? username : "SYSTEM";
+        }
+        return "SYSTEM";
+    }
+
+    private ProcessusDTO enrichirAvecOffre(Processus processus) {
+        ProcessusDTO dto = ProcessusMapper.toDTO(processus);
+
+        if (processus.getOffreId() != null) {
+            try {
+                OffreDTO offre = offreWebClient.get()
+                        .uri("/{id}", processus.getOffreId())
+                        .retrieve()
+                        .bodyToMono(OffreDTO.class)
+                        .block();
+
+                if (offre != null) {
+                    dto.setTitreOffre(offre.getTitre());
+                    dto.setCategorieOffre(offre.getCategorie());
+                }
+            } catch (Exception e) {
+                log.error("⚠️ Erreur lors de l'enrichissement de l'offre pour ID={}", processus.getOffreId(), e);
+            }
+        }
+
+        return dto;
+    }
 
 
 

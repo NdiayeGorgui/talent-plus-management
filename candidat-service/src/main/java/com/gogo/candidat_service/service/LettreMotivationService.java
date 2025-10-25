@@ -3,7 +3,6 @@ package com.gogo.candidat_service.service;
 import com.gogo.candidat_service.dto.LettreDTO;
 import com.gogo.candidat_service.exception.CandidatNotFoundException;
 import com.gogo.candidat_service.exception.LettreMotivationNotFoundException;
-import com.gogo.candidat_service.model.LettreMotivation;
 import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 

@@ -1,6 +1,8 @@
 package com.gogo.candidat_service.service;
 
 import com.gogo.candidat_service.dto.CompetenceLinguistiqueDTO;
+import com.gogo.candidat_service.enums.Langue;
+import com.gogo.candidat_service.enums.Niveau;
 import com.gogo.candidat_service.exception.CandidatNotFoundException;
 import com.gogo.candidat_service.exception.CompetenceLinguistiqueNotFoundException;
 import com.gogo.candidat_service.mapper.CompetenceLinguistiqueMapper;
@@ -64,5 +66,29 @@ public class CompetenceLinguistiqueServiceImpl implements CompetenceLinguistique
         }
         competenceLinguistiqueRepository.deleteById(id);
     }
+
+    @Override
+    public void updateCompetencesLinguistiques(Long candidatId, List<CompetenceLinguistiqueDTO> dtos)
+            throws CandidatNotFoundException, CompetenceLinguistiqueNotFoundException {
+
+        Candidat candidat = candidatRepository.findById(candidatId)
+                .orElseThrow(() -> new CandidatNotFoundException("Candidat non trouvé avec id " + candidatId));
+
+        for (CompetenceLinguistiqueDTO dto : dtos) {
+            CompetenceLinguistique existing = competenceLinguistiqueRepository.findById(dto.getId())
+                    .orElseThrow(() -> new CompetenceLinguistiqueNotFoundException(
+                            "Compétence linguistique non trouvée avec id " + dto.getId()));
+
+            if (!existing.getCandidat().getId().equals(candidatId)) {
+                throw new CompetenceLinguistiqueNotFoundException("Cette compétence ne correspond pas au candidat");
+            }
+
+            existing.setLangue(Langue.valueOf(dto.getLangue())); // optionnel si modifiable
+            existing.setNiveau(Niveau.valueOf(dto.getNiveau()));
+
+            competenceLinguistiqueRepository.save(existing);
+        }
+    }
+
 }
 

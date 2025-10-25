@@ -14,50 +14,94 @@ public class GlobalExceptionHandler {
     //manipulation exceptions spécifiques
     @ExceptionHandler(CandidatNotFoundException.class)
     public ResponseEntity<?> handleResourceNotFoundException(CandidatNotFoundException exception){
-        ErrorDetails errorDetails=new ErrorDetails(new Date(),exception.getMessage(),HttpStatus.NOT_FOUND);
-        log.error("Exception: {}",exception.getMessage());
-        return  ResponseEntity.internalServerError().body(errorDetails);
+        ErrorDetails errorDetails = new ErrorDetails(
+                new Date(),
+                exception.getMessage(),
+                HttpStatus.NOT_FOUND
+        );
+        log.error("Exception: {}", exception.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND) // 404
+                .body(errorDetails);
     }
+
 
     @ExceptionHandler(CompetenceNotFoundException.class)
     public ResponseEntity<?> handleResourceNotFoundException(CompetenceNotFoundException exception){
-        ErrorDetails errorDetails=new ErrorDetails(new Date(),exception.getMessage(),HttpStatus.NOT_FOUND);
-        log.error("Exception: {}",exception.getMessage());
-        return  ResponseEntity.internalServerError().body(errorDetails);
+        ErrorDetails errorDetails = new ErrorDetails(
+                new Date(),
+                exception.getMessage(),
+                HttpStatus.NOT_FOUND
+        );
+        log.error("Exception: {}", exception.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND) // 404
+                .body(errorDetails);
     }
 
     @ExceptionHandler(CompetenceLinguistiqueNotFoundException.class)
     public ResponseEntity<?> handleResourceNotFoundException(CompetenceLinguistiqueNotFoundException exception){
-        ErrorDetails errorDetails=new ErrorDetails(new Date(),exception.getMessage(),HttpStatus.NOT_FOUND);
-        log.error("Exception: {}",exception.getMessage());
-        return  ResponseEntity.internalServerError().body(errorDetails);
+        ErrorDetails errorDetails = new ErrorDetails(
+                new Date(),
+                exception.getMessage(),
+                HttpStatus.NOT_FOUND
+        );
+        log.error("Exception: {}", exception.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND) // 404
+                .body(errorDetails);
     }
+
     @ExceptionHandler(ExperienceNotFoundException.class)
     public ResponseEntity<?> handleResourceNotFoundException(ExperienceNotFoundException exception){
-        ErrorDetails errorDetails=new ErrorDetails(new Date(),exception.getMessage(),HttpStatus.NOT_FOUND);
-        log.error("Exception: {}",exception.getMessage());
-        return  ResponseEntity.internalServerError().body(errorDetails);
+        ErrorDetails errorDetails = new ErrorDetails(
+                new Date(),
+                exception.getMessage(),
+                HttpStatus.NOT_FOUND
+        );
+        log.error("Exception: {}", exception.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND) // 404
+                .body(errorDetails);
     }
 
     @ExceptionHandler(LettreMotivationNotFoundException.class)
     public ResponseEntity<?> handleResourceNotFoundException(LettreMotivationNotFoundException exception){
-        ErrorDetails errorDetails=new ErrorDetails(new Date(),exception.getMessage(),HttpStatus.NOT_FOUND);
-        log.error("Exception: {}",exception.getMessage());
-        return  ResponseEntity.internalServerError().body(errorDetails);
+        ErrorDetails errorDetails = new ErrorDetails(
+                new Date(),
+                exception.getMessage(),
+                HttpStatus.NOT_FOUND
+        );
+        log.error("Exception: {}", exception.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND) // 404
+                .body(errorDetails);
     }
 
     @ExceptionHandler(CvNotFoundException.class)
     public ResponseEntity<?> handleResourceNotFoundException(CvNotFoundException exception){
-        ErrorDetails errorDetails=new ErrorDetails(new Date(),exception.getMessage(),HttpStatus.NOT_FOUND);
-        log.error("Exception: {}",exception.getMessage());
-        return  ResponseEntity.internalServerError().body(errorDetails);
+        ErrorDetails errorDetails = new ErrorDetails(
+                new Date(),
+                exception.getMessage(),
+                HttpStatus.NOT_FOUND
+        );
+        log.error("Exception: {}", exception.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND) // 404
+                .body(errorDetails);
     }
 
     @ExceptionHandler(MetaDonneeRHNotFoundException.class)
     public ResponseEntity<?> handleResourceNotFoundException(MetaDonneeRHNotFoundException exception){
-        ErrorDetails errorDetails=new ErrorDetails(new Date(),exception.getMessage(),HttpStatus.NOT_FOUND);
-        log.error("Exception: {}",exception.getMessage());
-        return  ResponseEntity.internalServerError().body(errorDetails);
+        ErrorDetails errorDetails = new ErrorDetails(
+                new Date(),
+                exception.getMessage(),
+                HttpStatus.NOT_FOUND
+        );
+        log.error("Exception: {}", exception.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND) // 404
+                .body(errorDetails);
     }
 
     //manipulation  exceptions globales

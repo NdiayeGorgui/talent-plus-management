@@ -35,7 +35,7 @@ public class CvController {
         return ResponseEntity.ok(cvService.uploadCv(candidatId, file, titre));
     }
     // 🔹 Remplacer un CV existant
-    @PostMapping(value = "/{cvId}/replace", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping(value = "/{cvId}/replace", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<CvDTO> replaceCv(
             @PathVariable("cvId") Long cvId,
             @RequestParam("file") MultipartFile file,

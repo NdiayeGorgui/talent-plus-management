@@ -1,8 +1,8 @@
 package com.gogo.recrutement_service.mapper;
 
 import com.gogo.recrutement_service.dto.ProcessusDTO;
-import com.gogo.recrutement_service.model.Processus;
 import com.gogo.recrutement_service.enums.StatutProcessus;
+import com.gogo.recrutement_service.model.Processus;
 public class ProcessusMapper {
     public static ProcessusDTO toDTO(Processus entity) {
         ProcessusDTO dto = new ProcessusDTO();

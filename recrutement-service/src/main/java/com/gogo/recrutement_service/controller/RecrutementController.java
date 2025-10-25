@@ -112,5 +112,25 @@ public class RecrutementController {
         return ResponseEntity.ok(recrutementService.findByTypeCandidature(type));
     }
 
+    @GetMapping("/recruteur/{recruteurId}")
+    public ResponseEntity<List<ProcessusDTO>> getByRecruteur(@PathVariable("recruteurId") Long recruteurId) {
+        List<ProcessusDTO> list = recrutementService.getByRecruteur(recruteurId);
+        return ResponseEntity.ok(list);
+    }
+
+    @GetMapping("/recruteur/{recruteurId}/candidats")
+    public ResponseEntity<List<Long>> getCandidatIdsByRecruteur(@PathVariable("recruteurId") Long recruteurId) {
+        List<Long> candidatIds = recrutementService.getCandidatIdsByRecruteur(recruteurId);
+        return ResponseEntity.ok(candidatIds);
+    }
+
+    @GetMapping("/existe/{candidatId}/{offreId}")
+    public ResponseEntity<Boolean> hasAlreadyApplied(
+            @PathVariable("candidatId") Long candidatId,
+            @PathVariable("offreId") Long offreId) {
+        boolean exists = recrutementService.hasAlreadyApplied(candidatId, offreId);
+        return ResponseEntity.ok(exists);
+    }
+
 
 }

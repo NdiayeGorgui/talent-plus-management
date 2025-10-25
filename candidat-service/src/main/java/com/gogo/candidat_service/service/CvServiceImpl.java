@@ -8,10 +8,10 @@ import com.gogo.candidat_service.model.CV;
 import com.gogo.candidat_service.model.Candidat;
 import com.gogo.candidat_service.repository.CVRepository;
 import com.gogo.candidat_service.repository.CandidatRepository;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -64,30 +64,35 @@ public class CvServiceImpl implements CvService {
         CV oldCv = cvRepository.findById(cvId)
                 .orElseThrow(() -> new CvNotFoundException("CV non trouvé avec id " + cvId));
 
+        // Supprimer l'ancien fichier s'il existe
         File oldFile = new File(oldCv.getFichierUrl());
         if (oldFile.exists()) oldFile.delete();
 
+        // Créer le répertoire si nécessaire
         File dir = new File(uploadDir);
         if (!dir.exists()) dir.mkdirs();
 
+        // Sauvegarder le nouveau fichier
         String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
         String filePath = uploadDir + fileName;
         file.transferTo(new File(filePath));
 
-        CV newCv = new CV();
-        newCv.setTitre(titre != null ? titre : oldCv.getTitre());
-        newCv.setFichierUrl(filePath);
-        newCv.setCandidat(oldCv.getCandidat());
-        newCv.setDateDepot(LocalDateTime.now());
+        // Remplacer les champs dans l'objet existant
+        oldCv.setFichierUrl(filePath);
+        oldCv.setDateDepot(LocalDateTime.now());
 
-        Integer lastVersion = cvRepository.findTopByCandidatOrderByVersionDesc(oldCv.getCandidat())
-                .map(CV::getVersion)
-                .orElse(0);
-        newCv.setVersion(lastVersion + 1);
+        if (titre != null && !titre.isBlank()) {
+            oldCv.setTitre(titre);
+        }
 
-        CV saved = cvRepository.save(newCv);
+        // ✅ Incrémenter la version
+        oldCv.setVersion(oldCv.getVersion() + 1);
+
+        CV saved = cvRepository.save(oldCv);
         return CvMapper.toDTO(saved);
     }
+
+
 
     @Override
     public List<CvDTO> getCvsByCandidat(Long candidatId) throws CandidatNotFoundException {

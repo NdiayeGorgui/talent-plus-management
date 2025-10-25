@@ -8,13 +8,19 @@ public class LettreMapper {
 
     public static LettreMotivation fromDTO(LettreDTO dto, Candidat candidat) {
         LettreMotivation lettre = new LettreMotivation();
-        lettre.setTitre(dto.getTitre());
+
+        // Si le titre est null ou vide, on met un titre par défaut
+        String titre = (dto.getTitre() == null || dto.getTitre().trim().isEmpty())
+                ? "Ma lettre de motivation"
+                : dto.getTitre();
+        lettre.setTitre(titre);
         lettre.setContenu(dto.getContenu());
         lettre.setCandidat(candidat);
         lettre.setVersion(dto.getVersion());
         lettre.setDateDepot(dto.getDateDepot());
         return lettre;
     }
+
 
     public static LettreDTO toDTO(LettreMotivation lettre) {
         LettreDTO dto = new LettreDTO();

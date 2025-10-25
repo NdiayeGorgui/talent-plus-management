@@ -7,6 +7,7 @@ import com.gogo.candidat_service.exception.CompetenceNotFoundException;
 import com.gogo.candidat_service.service.CompetenceService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 

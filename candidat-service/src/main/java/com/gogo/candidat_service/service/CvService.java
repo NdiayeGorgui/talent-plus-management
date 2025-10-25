@@ -3,7 +3,6 @@ package com.gogo.candidat_service.service;
 import com.gogo.candidat_service.dto.CvDTO;
 import com.gogo.candidat_service.exception.CandidatNotFoundException;
 import com.gogo.candidat_service.exception.CvNotFoundException;
-import com.gogo.candidat_service.model.CV;
 import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 

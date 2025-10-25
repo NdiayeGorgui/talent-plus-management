@@ -13,26 +13,54 @@ import java.util.Date;
 public class GlobalExceptionHandler {
     @ExceptionHandler(CandidatNotFoundException.class)
     public ResponseEntity<?> handleCandidatNotFound(CandidatNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(new ErrorDetails(new Date(), ex.getMessage(), HttpStatus.NOT_FOUND));
+        ErrorDetails errorDetails = new ErrorDetails(
+                new Date(),
+                ex.getMessage(),
+                HttpStatus.NOT_FOUND
+        );
+        log.error("Exception: {}", ex.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND) // 404
+                .body(errorDetails);
     }
 
     @ExceptionHandler(OffreNotFoundException.class)
     public ResponseEntity<?> handleOffreNotFound(OffreNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(new ErrorDetails(new Date(), ex.getMessage(), HttpStatus.NOT_FOUND));
+        ErrorDetails errorDetails = new ErrorDetails(
+                new Date(),
+                ex.getMessage(),
+                HttpStatus.NOT_FOUND
+        );
+        log.error("Exception: {}", ex.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND) // 404
+                .body(errorDetails);
     }
 
     @ExceptionHandler(ProcessusNotFoundException.class)
     public ResponseEntity<?> handleProcessusNotFound(ProcessusNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(new ErrorDetails(new Date(), ex.getMessage(), HttpStatus.NOT_FOUND));
+        ErrorDetails errorDetails = new ErrorDetails(
+                new Date(),
+                ex.getMessage(),
+                HttpStatus.NOT_FOUND
+        );
+        log.error("Exception: {}", ex.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND) // 404
+                .body(errorDetails);
     }
 
     @ExceptionHandler(NotificationException.class)
     public ResponseEntity<?> handleNotification(NotificationException ex) {
-        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
-                .body(new ErrorDetails(new Date(), ex.getMessage(), HttpStatus.SERVICE_UNAVAILABLE));
+        ErrorDetails errorDetails = new ErrorDetails(
+                new Date(),
+                ex.getMessage(),
+                HttpStatus.NOT_FOUND
+        );
+        log.error("Exception: {}", ex.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND) // 404
+                .body(errorDetails);
     }
 
 

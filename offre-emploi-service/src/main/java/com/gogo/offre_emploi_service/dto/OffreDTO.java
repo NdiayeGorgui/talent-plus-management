@@ -17,6 +17,7 @@ public class OffreDTO {
     private String pays;
     private boolean active;
     private Long recruteurId;
+    private Long employeurId;
 
 }
 

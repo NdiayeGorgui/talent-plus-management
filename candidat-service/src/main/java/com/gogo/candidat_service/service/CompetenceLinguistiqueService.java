@@ -15,5 +15,8 @@ public interface CompetenceLinguistiqueService {
             throws CandidatNotFoundException;
 
     void deleteCompetenceLinguistique(Long id) throws CompetenceLinguistiqueNotFoundException;
+    void updateCompetencesLinguistiques(Long candidatId, List<CompetenceLinguistiqueDTO> dtos)
+            throws CandidatNotFoundException, CompetenceLinguistiqueNotFoundException;
+
 }
 

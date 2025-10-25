@@ -2,13 +2,12 @@ package com.gogo.candidat_service.service;
 
 import com.gogo.candidat_service.dto.CandidatDTO;
 import com.gogo.candidat_service.dto.CandidatResponseDTO;
-import com.gogo.candidat_service.dto.CandidatureParMoisDTO;
 import com.gogo.candidat_service.dto.PostulerRequest;
 import com.gogo.candidat_service.exception.CandidatNotFoundException;
 import com.gogo.candidat_service.model.Candidat;
-import com.netflix.appinfo.ApplicationInfoManager;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface CandidatService {
     CandidatDTO saveCandidat(Candidat candidat);
@@ -21,6 +20,10 @@ public interface CandidatService {
     Candidat postuler(PostulerRequest request);
 
     CandidatResponseDTO  findById(Long id) throws CandidatNotFoundException;
+
+    Optional<CandidatResponseDTO> findByEmail(String email);
     // List<CandidatureParMoisDTO> getCandidaturesParMois();
+    List<CandidatDTO> findByIds(List<Long> ids);
+
 }
 

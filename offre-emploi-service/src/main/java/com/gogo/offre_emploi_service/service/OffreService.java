@@ -1,5 +1,6 @@
 package com.gogo.offre_emploi_service.service;
 
+import com.gogo.offre_emploi_service.dto.OffreCountDTO;
 import com.gogo.offre_emploi_service.dto.OffreDTO;
 import com.gogo.offre_emploi_service.exception.OffreNotFoundException;
 
@@ -19,6 +20,11 @@ public interface OffreService {
 
     OffreDTO getOffreById(Long id) throws OffreNotFoundException;
     List<OffreDTO> getOffresByRecruteur(Long recruteurId);
+    List<Long> findOffreIdsByRecruteurId(Long recruteurId);
+    List<OffreDTO> getOffresByEmployeur(Long employeurId);
+    List<Long> findOffreIdsByEmployeurId(Long employeurId);
+    List<OffreCountDTO> countOffresByRecruteur();
+    List<OffreCountDTO> countOffresByEmployeur();
 
 }
 

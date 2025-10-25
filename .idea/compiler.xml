@@ -17,6 +17,7 @@
         <module name="statistic-service" />
         <module name="notification-service" />
         <module name="base-domaine-service" />
+        <module name="employeur-service" />
       </profile>
     </annotationProcessing>
   </component>

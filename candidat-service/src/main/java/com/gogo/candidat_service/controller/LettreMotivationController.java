@@ -6,7 +6,6 @@ import com.gogo.candidat_service.exception.LettreMotivationNotFoundException;
 import com.gogo.candidat_service.model.LettreMotivation;
 import com.gogo.candidat_service.repository.LettreMotivationRepository;
 import com.gogo.candidat_service.service.LettreMotivationService;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -15,8 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.List;
 
 @RestController
@@ -93,10 +92,17 @@ public class LettreMotivationController {
 
         Resource resource = lettreService.downloadLettre(id);
 
+        // ✅ Détecte dynamiquement le vrai type MIME du fichier
+        String mimeType = Files.probeContentType(file.toPath());
+        if (mimeType == null) {
+            mimeType = "application/octet-stream";
+        }
+
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + downloadName + "\"")
-                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .contentType(MediaType.parseMediaType(mimeType))
                 .body(resource);
     }
+
 
 }

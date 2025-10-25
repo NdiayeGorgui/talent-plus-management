@@ -5,8 +5,6 @@ import com.gogo.candidat_service.dto.MetadonneeRHDTO;
 import com.gogo.candidat_service.exception.CandidatNotFoundException;
 import com.gogo.candidat_service.exception.MetaDonneeRHNotFoundException;
 
-import java.util.List;
-
 public interface MetaDonneeRHService {
     MetadonneeRHDTO addMetadonneeRh(Long candidatId, MetadonneeRHDTO dto)
             throws CandidatNotFoundException;

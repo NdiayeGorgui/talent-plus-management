@@ -1,7 +1,5 @@
 package com.gogo.candidat_service.dto;
 
-import com.gogo.candidat_service.enums.Langue;
-import com.gogo.candidat_service.enums.Niveau;
 import lombok.Data;
 
 @Data

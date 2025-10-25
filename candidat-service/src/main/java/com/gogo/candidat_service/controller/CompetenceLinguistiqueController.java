@@ -48,4 +48,14 @@ public class CompetenceLinguistiqueController {
         competenceLinguistiqueService.deleteCompetenceLinguistique(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PutMapping("/{candidatId}")
+    public ResponseEntity<Void> updateCompetencesLinguistiques(
+            @PathVariable("candidatId") Long candidatId,
+            @RequestBody List<CompetenceLinguistiqueDTO> dtos) throws CandidatNotFoundException, CompetenceLinguistiqueNotFoundException {
+
+        competenceLinguistiqueService.updateCompetencesLinguistiques(candidatId, dtos);
+        return ResponseEntity.ok().build();
+    }
+
 }

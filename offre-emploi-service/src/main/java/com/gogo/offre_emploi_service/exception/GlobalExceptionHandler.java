@@ -20,8 +20,10 @@ public class GlobalExceptionHandler {
                 exception.getMessage(),
                 HttpStatus.NOT_FOUND
         );
-        log.error("Offre not found: {}", exception.getMessage());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorDetails);
+        log.error("Exception: {}", exception.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND) // 404
+                .body(errorDetails);
     }
 
     // 📌 Gestion des exceptions globales

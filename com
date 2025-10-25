@@ -14,6 +14,7 @@ CREATE DATABASE candidat_prod_db;
 CREATE DATABASE offre_prod_db;
 CREATE DATABASE recrutement_prod_db;
 CREATE DATABASE recruteur_prod_db;
+CREATE DATABASE employeur_prod_db;
 CREATE DATABASE utilisateur_prod_db;
 CREATE DATABASE notification_talent_prod_db;
 \l
@@ -48,3 +49,5 @@ docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword
  build: ./candidat-service
 
  java -jar jenkins.war --httpPort=8080
+
+ngrok http 8080

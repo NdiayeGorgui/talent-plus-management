@@ -25,7 +25,9 @@ public interface RecrutementService {
             throws ProcessusNotFoundException, OffreNotFoundException, NotificationException;
     List<ProcessusDTO> getCandidaturesSpontanees();
     List<ProcessusDTO> findByTypeCandidature(TypeCandidature typeCandidature);
-
+    List<ProcessusDTO> getByRecruteur(Long recruteurId);
+    List<Long> getCandidatIdsByRecruteur(Long recruteurId);
+    boolean hasAlreadyApplied(Long candidatId, Long offreId);
 
 
 }
