@@ -339,6 +339,15 @@ services:
     networks:
       - my_talent_network
 
+  # Angular Project (Pour exploiter les services du backend)
+  talent-plus-angular:
+    image: gorgui/talent-plus-angular:latest
+    container_name: talent-plus-angular
+    ports:
+      - '4200:80'
+    expose:
+      - '4200'
+
 volumes:
   talent_pg_data:
 
