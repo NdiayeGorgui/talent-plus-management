@@ -23,66 +23,38 @@ pipeline {
             }
         }
 
-        stage('Detect Changed Modules') {
+        stage('Maven Build (Multi-Module)') {
             steps {
-                script {
-                    echo "🔍 Détection des microservices modifiés..."
-
-                    // Récupération des fichiers modifiés (HEAD vs commit précédent)
-                    def changedFiles = bat(
-                        script: 'git diff --name-only HEAD~1 HEAD',
-                        returnStdout: true
-                    ).trim().split('\n')
-
-                    // Liste des modules correspondants
-                    def allModules = [
-                        "api-gateway-service"     : "gateway-service",
-                        "candidat-service"        : "candidat-service",
-                        "config-service"          : "config-server",
-                        "employeur-service"       : "employeur-service",
-                        "eureka-service"          : "eureka-service",
-                        "notification-service"    : "notification-talent-service",
-                        "offre-emploi-service"    : "offre-service",
-                        "recrutement-service"     : "recrutement-service",
-                        "recruteur-service"       : "recruteur-service",
-                        "statistic-service"       : "statistic-service",
-                        "utilisateur-service"     : "utilisateur-service"
-                    ]
-
-                    // Trouver les modules à builder
-                    CHANGED_MODULES = []
-                    allModules.each { module, image ->
-                        if (changedFiles.any { it.startsWith("${module}/") }) {
-                            CHANGED_MODULES << [module: module, image: image]
-                        }
-                    }
-
-                    if (CHANGED_MODULES.isEmpty()) {
-                        echo "✅ Aucun microservice modifié ✅"
-                    } else {
-                        echo "✅ Services concernés : ${CHANGED_MODULES*.module}"
-                    }
-                }
+                echo "⚙️ Build Maven multi-module"
+                bat 'mvn clean install -DskipTests'
             }
         }
 
-        stage('Docker Build & Push Only Changed') {
-            when {
-                expression { return CHANGED_MODULES && CHANGED_MODULES.size() > 0 }
-            }
+        stage('Docker Build & Push') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                     echo "🔐 Connexion à DockerHub"
                     bat 'docker login -u %DOCKER_USER% -p %DOCKER_PASS%'
 
                     script {
-                        CHANGED_MODULES.each { item ->
-                            def module = item.module
-                            def imageName = item.image
+                        def modules = [
+                            "api-gateway-service"     : "gateway-service",
+                            "candidat-service"        : "candidat-service",
+                            "config-service"          : "config-server",
+                            "eureka-service"          : "eureka-service",
+                            "notification-service"    : "notification-talent-service",
+                            "offre-emploi-service"    : "offre-service",
+                            "recrutement-service"     : "recrutement-service",
+                            "recruteur-service"       : "recruteur-service",
+                            "statistic-service"       : "statistic-service",
+                            "utilisateur-service"     : "utilisateur-service"
+                        ]
 
-                            echo "🚀 Build & Push pour ${module} -> ${imageName}"
+                        modules.each { module, imageName ->
+                            echo "🔧 Construction de l'image Docker pour ${module} -> ${imageName}"
                             bat "docker build -t %DOCKERHUB_USER%/${imageName}:latest .\\${module}"
                             bat "docker tag %DOCKERHUB_USER%/${imageName}:latest %DOCKERHUB_USER%/${imageName}:%VERSION%"
+                            echo "📤 Poussée de ${imageName} sur DockerHub"
                             bat "docker push %DOCKERHUB_USER%/${imageName}:latest"
                             bat "docker push %DOCKERHUB_USER%/${imageName}:%VERSION%"
                         }
@@ -90,14 +62,19 @@ pipeline {
                 }
             }
         }
+
+
     }
 
     post {
-        success {
-            echo '✅ Pipeline terminé avec succès.'
+        always {
+            echo '🧹 Pipeline terminé (post actions).'
         }
         failure {
-            echo '❌ Échec du pipeline.'
+            echo '❌ Le pipeline a échoué.'
+        }
+        success {
+            echo '✅ Déploiement terminé avec succès.'
         }
     }
 }
