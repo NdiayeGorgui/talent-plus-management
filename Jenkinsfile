@@ -46,6 +46,7 @@ pipeline {
                             "offre-emploi-service"    : "offre-service",
                             "recrutement-service"     : "recrutement-service",
                             "recruteur-service"       : "recruteur-service",
+                            "employeur-service"       : "employeur-service",
                             "statistic-service"       : "statistic-service",
                             "utilisateur-service"     : "utilisateur-service"
                         ]
