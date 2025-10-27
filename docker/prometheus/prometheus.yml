@@ -15,7 +15,7 @@ scrape_configs:
     metrics_path: '/actuator/prometheus'
     scrape_interval: 5s
     static_configs:
-      - targets: [ 'offre-service:8083' ]
+      - targets: ['offre-service:8083']
         labels:
           application: 'Offre Service Application'
 
@@ -23,23 +23,23 @@ scrape_configs:
     metrics_path: '/actuator/prometheus'
     scrape_interval: 5s
     static_configs:
-      - targets: [ 'recrutement-service:8085' ]
+      - targets: ['recrutement-service:8085']
         labels:
           application: 'Recrutement Service Application'
 
-  - job_name: 'recruteur-service'
+  - job_name: 'recruteur_service'
     metrics_path: '/actuator/prometheus'
     scrape_interval: 5s
     static_configs:
-      - targets: [ 'recruteur-service:8084' ]
+      - targets: ['recruteur-service:8084']
         labels:
           application: 'Recruteur Service Application'
 
-  - job_name: 'employeur-service'
+  - job_name: 'employeur_service'
     metrics_path: '/actuator/prometheus'
     scrape_interval: 5s
     static_configs:
-      - targets: [ 'employeur-service:8088' ]
+      - targets: ['employeur-service:8088']
         labels:
           application: 'Employeur Service Application'
 
@@ -55,7 +55,7 @@ scrape_configs:
     metrics_path: '/actuator/prometheus'
     scrape_interval: 5s
     static_configs:
-      - targets: [ 'notification-talent-service:8082' ]
+      - targets: ['notification-talent-service:8082']
         labels:
           application: 'Notification Service Application'
 
@@ -63,7 +63,7 @@ scrape_configs:
     metrics_path: '/actuator/prometheus'
     scrape_interval: 5s
     static_configs:
-      - targets: [ 'utilisateur-service:8087' ]
+      - targets: ['utilisateur-service:8087']
         labels:
           application: 'Utilisateur Service Application'
 
@@ -71,6 +71,6 @@ scrape_configs:
     metrics_path: '/actuator/prometheus'
     scrape_interval: 5s
     static_configs:
-      - targets: [ 'gateway-service:8888' ]
+      - targets: ['gateway-service:8888']
         labels:
           application: 'Api Gateway Service Application'
