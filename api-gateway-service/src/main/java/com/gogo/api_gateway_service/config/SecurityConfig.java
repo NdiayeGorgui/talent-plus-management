@@ -22,18 +22,23 @@ public class SecurityConfig {
         return http
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(exchanges -> exchanges
-                        // ✅ Autoriser toutes les routes d'authentification du service utilisateur
+                        // ✅ Autoriser Prometheus et Health Check sans authentification
+                        .pathMatchers(
+                                "/actuator/**"
+                        ).permitAll()
+
+                        // ✅ Autoriser les routes d'authentification et docs swagger du service utilisateur
                         .pathMatchers(
                                 "/utilisateur-service/api/v1/auth/**",
                                 "/utilisateur-service/v3/api-docs/**",
                                 "/utilisateur-service/swagger-ui/**"
                         ).permitAll()
-                        // Tout le reste nécessite un JWT valide
+
+                        // 🔐 Tout le reste nécessite un JWT valide
                         .anyExchange().authenticated()
                 )
+                // ✅ Appliquer le filtre JWT seulement après les exclusions ci-dessus
                 .addFilterAt(jwtFilter, SecurityWebFiltersOrder.AUTHENTICATION)
                 .build();
     }
-
-
 }

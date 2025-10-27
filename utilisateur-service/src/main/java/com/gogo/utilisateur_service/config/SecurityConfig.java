@@ -41,6 +41,7 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/actuator/**").permitAll()
                         .requestMatchers("/api/v1/auth/**").permitAll() // public
                         .requestMatchers("/api/v1/auth/me").authenticated()
                         .requestMatchers("/api/v1/admin/**").authenticated() // protégé
